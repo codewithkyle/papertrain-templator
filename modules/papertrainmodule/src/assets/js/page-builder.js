@@ -81,7 +81,7 @@
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = "./preact/index.tsx");
+/******/ 	return __webpack_require__(__webpack_require__.s = "./preact/page-builder/index.tsx");
 /******/ })
 /************************************************************************/
 /******/ ({
@@ -98,15 +98,15 @@ eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export (binding) *
 
 /***/ }),
 
-/***/ "./preact/index.tsx":
-/*!**************************!*\
-  !*** ./preact/index.tsx ***!
-  \**************************/
+/***/ "./preact/page-builder/index.tsx":
+/*!***************************************!*\
+  !*** ./preact/page-builder/index.tsx ***!
+  \***************************************/
 /*! no exports provided */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var preact__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! preact */ \"./node_modules/preact/dist/preact.module.js\");\n\nclass PageBuilder extends preact__WEBPACK_IMPORTED_MODULE_0__[\"Component\"] {\n    render() {\n        return Object(preact__WEBPACK_IMPORTED_MODULE_0__[\"h\"])(\"span\", null, \"Hello world!\");\n    }\n}\nObject(preact__WEBPACK_IMPORTED_MODULE_0__[\"render\"])(Object(preact__WEBPACK_IMPORTED_MODULE_0__[\"h\"])(PageBuilder, null), document.body.querySelector(\"#page-builder-mounting-point\"));\n\n\n//# sourceURL=webpack:///./preact/index.tsx?");
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var preact__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! preact */ \"./node_modules/preact/dist/preact.module.js\");\n\nclass PageBuilder extends preact__WEBPACK_IMPORTED_MODULE_0__[\"Component\"] {\n    render() {\n        return Object(preact__WEBPACK_IMPORTED_MODULE_0__[\"h\"])(\"span\", null, \"Hello world!\");\n    }\n}\nObject(preact__WEBPACK_IMPORTED_MODULE_0__[\"render\"])(Object(preact__WEBPACK_IMPORTED_MODULE_0__[\"h\"])(PageBuilder, null), document.body.querySelector(\"#page-builder-mounting-point\"));\n\n\n//# sourceURL=webpack:///./preact/page-builder/index.tsx?");
 
 /***/ })
 

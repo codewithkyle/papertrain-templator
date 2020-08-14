@@ -3,7 +3,7 @@ const cwd = process.cwd();
 
 module.exports = {
     entry: {
-        "page-builder": path.join(__dirname, "index.tsx"),
+        "page-builder": path.join(__dirname, "page-builder", "index.tsx"),
     },
     mode: process.env.NODE_ENV === "production" ? "production" : "development",
     module: {
