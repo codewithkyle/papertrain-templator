@@ -1,0 +1,26 @@
+dateModified: 1597364127
+email:
+  fromEmail: codingwithkyle@gmail.com
+  fromName: 'Papertrain Templator'
+  transportType: craft\mail\transportadapters\Sendmail
+plugins:
+  eager-beaver:
+    edition: standard
+    enabled: true
+    schemaVersion: 1.0.0
+  redactor:
+    edition: standard
+    enabled: true
+    schemaVersion: 2.3.0
+system:
+  edition: solo
+  live: true
+  name: 'Papertrain Templator'
+  schemaVersion: 3.5.12
+  timeZone: America/Los_Angeles
+users:
+  allowPublicRegistration: false
+  defaultGroup: null
+  photoSubpath: null
+  photoVolumeUid: null
+  requireEmailVerification: true
