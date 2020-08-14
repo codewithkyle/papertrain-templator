@@ -1,0 +1,30 @@
+{
+    "groups": [
+        {
+            "handle": "heros",
+            "label": "Heros"
+        },
+        {
+            "handle": "copy",
+            "label": "Copy"
+        },
+        {
+            "handle": "utilities",
+            "label": "Utilities"
+        }
+    ],
+    "blocks": {
+        "homepage-hero": {
+            "group": "heros",
+            "label": "Homepager Hero"
+        },
+        "rich-text": {
+            "group": "copy",
+            "label": "Rich Text"
+        },
+        "spacer-block": {
+            "group": "utilities",
+            "label": "Spacer"
+        }
+    }
+}

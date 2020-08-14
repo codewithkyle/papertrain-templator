@@ -1,4 +1,4 @@
-<homepage-hero-block lazy-css="homepage-hero-block">
+<homepage-hero lazy-css="homepage-hero">
     {% set image = data.backgroundImage[0] ?? null %}
     {% if image %}
         <img src="{{ image.url }}" alt="{{ image.description }}" />
@@ -7,4 +7,4 @@
         <h1>{{ data.heading }}</h1>
         {{ data.copy }}
     </div>
-</homepage-hero-block>
+</homepage-hero>
