@@ -27,6 +27,7 @@ class PapertrainModuleService extends Component
 {
     // Public Methods
     // =========================================================================
+
     public function renderBlock(string $block)
     {
         $model = include(FileHelper::normalizePath(Craft::$app->getPath()->getConfigPath() . '/papertrain/blocks/' . $block . '.php'));

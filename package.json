@@ -1,17 +1,25 @@
 {
-  "scripts": {
-    "cleanup": "node ./build-tools/cleanup.js",
-		"brixi": "brixi",
-		"compile": "tsc",
-		"sass:dev": "cssmonster --e dev",
-		"sass:prod": "cssmonster",
-		"build": "npm run cleanup && npm run compile && npm run sass:dev && djinnjs -e dev && npm run cleanup",
-		"production": "npm run cleanup && npm run compile && npm run sass:prod && djinnjs -e production && npm run cleanup"
-  },
-  "dependencies": {
-    "brixi": "^0.2.2",
-    "cssmonster": "^0.2.1",
-    "djinnjs": "^0.1.2",
-    "typescript": "^3.9.7"
-  }
+    "scripts": {
+        "cleanup": "node ./build-tools/cleanup.js",
+        "brixi": "brixi",
+        "compile": "tsc",
+        "sass:dev": "cssmonster --e dev",
+        "sass:prod": "cssmonster",
+        "build": "npm run cleanup && npm run compile && npm run sass:dev && djinnjs -e dev && npm run cleanup",
+        "production": "npm run cleanup && npm run compile && npm run sass:prod && djinnjs -e production && npm run cleanup",
+        "preact": "webpack --config ./preact/webpack.config.js"
+    },
+    "devDependencies": {
+        "sass-loader": "^9.0.3",
+        "style-loader": "^1.2.1",
+        "ts-loader": "^8.0.2",
+        "typescript": "^3.9.7",
+        "webpack": "^4.44.1",
+        "webpack-cli": "^3.3.12",
+        "brixi": "^0.2.2",
+        "css-loader": "^4.2.1",
+        "cssmonster": "^0.2.1",
+        "djinnjs": "^0.1.2",
+        "preact": "^10.4.7"
+    }
 }

@@ -10,7 +10,6 @@
 
 namespace modules\papertrainmodule;
 
-use modules\papertrainmodule\assetbundles\papertrainmodule\PapertrainModuleAsset;
 use modules\papertrainmodule\services\PapertrainModuleService as PapertrainModuleServiceService;
 use modules\papertrainmodule\variables\PapertrainModuleVariable;
 
@@ -22,6 +21,8 @@ use craft\web\View;
 use craft\web\UrlManager;
 use craft\web\twig\variables\CraftVariable;
 use craft\events\RegisterUrlRulesEvent;
+use craft\events\RegisterCpNavItemsEvent;
+use craft\web\twig\variables\Cp;
 
 use yii\base\Event;
 use yii\base\InvalidConfigException;
@@ -70,10 +71,9 @@ class PapertrainModule extends Module
             ];
         }
 
-        // Base template directory
         Event::on(View::class, View::EVENT_REGISTER_CP_TEMPLATE_ROOTS, function (RegisterTemplateRootsEvent $e) {
             if (is_dir($baseDir = $this->getBasePath().DIRECTORY_SEPARATOR.'templates')) {
-                $e->roots[$this->id] = $baseDir;
+                $e->roots['papertrain'] = $this->getBasePath().DIRECTORY_SEPARATOR.'templates';
             }
         });
 
@@ -91,36 +91,25 @@ class PapertrainModule extends Module
         parent::init();
         self::$instance = $this;
 
-        if (Craft::$app->getRequest()->getIsCpRequest()) {
-            Event::on(
-                View::class,
-                View::EVENT_BEFORE_RENDER_TEMPLATE,
-                function (TemplateEvent $event) {
-                    try {
-                        Craft::$app->getView()->registerAssetBundle(PapertrainModuleAsset::class);
-                    } catch (InvalidConfigException $e) {
-                        Craft::error(
-                            'Error registering AssetBundle - '.$e->getMessage(),
-                            __METHOD__
-                        );
-                    }
-                }
-            );
-        }
-
-        // Event::on(
-        //     UrlManager::class,
-        //     UrlManager::EVENT_REGISTER_SITE_URL_RULES,
-        //     function (RegisterUrlRulesEvent $event) {
-        //         $event->rules['siteActionTrigger1'] = 'papertrain-module/default';
-        //     }
-        // );
+        Event::on(
+            Cp::class,
+            Cp::EVENT_REGISTER_CP_NAV_ITEMS,
+            function(RegisterCpNavItemsEvent $event) {
+                $event->navItems[] = [
+                    'url' => 'papertrain/page-builder',
+                    'label' => 'Page Builder',
+                    'icon' => '@modules/papertrainmodule/assets/img/page-builder-icon.svg',
+                ];
+            }
+        );
 
         Event::on(
             UrlManager::class,
             UrlManager::EVENT_REGISTER_CP_URL_RULES,
             function (RegisterUrlRulesEvent $event) {
+                // API
                 $event->rules['papertrain/api/render/<block:.*>'] = 'papertrain-module/default/render-block';
+                $event->rules['papertrain/api/load/<script:.*>'] = 'papertrain-module/default/load-script';
             }
         );
 

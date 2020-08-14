@@ -31,9 +31,7 @@ class DefaultController extends Controller
      *         The actions must be in 'kebab-case'
      * @access protected
      */
-    protected $allowAnonymous = [
-        'render-block',
-    ];
+    protected $allowAnonymous = [];
 
     // Public Methods
     // =========================================================================
@@ -41,5 +39,13 @@ class DefaultController extends Controller
     public function actionRenderBlock(string $block)
     {
         return PapertrainModule::getInstance()->papertrainModuleService->renderBlock($block);
+    }
+
+    public function actionLoadScript(string $script)
+    {
+        $filePath = dirname(__DIR__);
+        $filePath .= '/assets/js/';
+        $filePath .= $script;
+        return Craft::$app->response->sendFile($filePath, $script);
     }
 }
