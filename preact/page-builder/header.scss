@@ -1,0 +1,10 @@
+header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-flow: row nowrap;
+    height: 64px;
+    padding: 0 2rem;
+    background-color: var(--white);
+    border-bottom: 1px solid var(--grey-200);
+}

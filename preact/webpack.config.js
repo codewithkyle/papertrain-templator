@@ -9,7 +9,7 @@ module.exports = {
     module: {
         rules: [
             {
-                test: /\.(js|jsx|ts|tsx)$/,
+                test: /\.tsx$/,
                 exclude: /(node_modules)/,
                 loader: "ts-loader",
                 options: {
@@ -26,8 +26,10 @@ module.exports = {
             },
         ],
     },
+    resolve: { extensions: ["*", ".js", ".jsx", ".ts", ".tsx"] },
     output: {
         filename: "[name].js",
         path: path.join(cwd, "modules", "papertrainmodule", "src", "assets", "js"),
     },
+    watch: process.env.NODE_ENV !== "production",
 };

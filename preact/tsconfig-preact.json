@@ -13,6 +13,5 @@
         "forceConsistentCasingInFileNames": true,
         "isolatedModules": true
     },
-    "include": ["./"],
-    "exclude": ["./webpack.config.js"]
+    "include": ["./page-builder"]
 }

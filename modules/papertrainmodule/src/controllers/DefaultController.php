@@ -54,7 +54,7 @@ class DefaultController extends Controller
         }
     }
 
-    public function actionLoadPreactScript(string $script)
+    public function actionLoadCoreScript(string $script)
     {
         $filePath = dirname(__DIR__);
         $filePath .= '/assets/js/';
