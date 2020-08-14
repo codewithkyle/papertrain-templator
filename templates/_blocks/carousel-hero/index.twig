@@ -1,0 +1,43 @@
+
+<carousel-hero 
+    style="display:block;width:100%;" 
+    lazy-css="carousel-hero buttons" 
+    web-component 
+    {% if data.automaticTransition %}
+        data-automatic="true"
+    {% endif %}
+>
+    {% for slide in data.slides %}
+        <carousel-slide class="{{ (loop.first) ? 'is-active' : '' }}">
+            <img alt="{{ slide.backgroundImage[0].description }}" src="{{ slide.backgroundImage[0].url }}" width="1920" loading="lazy" style="opacity:0;transition:opacity 300ms ease-in-out;" onload="this.style.opacity = '1';">
+            {% if slide.heading|length or slide.copy|length %}
+                <content-shim>
+                    <div>
+                        {% if slide.heading|length %}
+                            <h1 class="{{ slide.copy|length ? 'mb-0.5' }}">{{ slide.heading }}</h1>
+                        {% endif %}
+                        {% if slide.copy|length %}
+                            <div class="{{ slide.callToAction.url|length or slide.secondaryAction.url|length ? 'mb-1.5' }}">
+                                {{ slide.copy }}
+                            </div>
+                        {% endif %}
+                        {% if slide.callToAction.url|length %}
+                            <a href="{{ slide.callToAction.url }}" class="button -solid -primary -raised -tall -wide -rounded mr-1 font-md">{{ slide.callToAction.customText }}</a>
+                        {% endif %}
+                        {% if slide.secondaryAction.url|length %}
+                            <a href="{{ slide.secondaryAction.url }}" class="button -solid -white -raised -tall -wide -rounded font-md">{{ slide.secondaryAction.customText }}</a>
+                        {% endif %}
+                    </div>
+                </content-shim>
+            {% endif %}
+        </carousel-slide>
+    {% endfor %}
+    {% if data.slides|length > 1 %}
+        <carousel-controls eager-css="carousel-hero-controls" style="opacity:0;visibility:hidden;transition:all 150ms ease-in-out;">
+            {% for slide in data.slides %}
+                <button class="{{ loop.first ? 'is-active': '' }}" data-index="{{ loop.index0 }}" aria-label="switch to slide {{ loop.index }}"></button>
+            {% endfor %}
+        </carousel-controls>
+        <carousel-timer aria-label="carousels progress bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></carousel-timer>
+    {% endif %}
+</carousel-hero>

@@ -41,11 +41,31 @@ class DefaultController extends Controller
         return PapertrainModule::getInstance()->papertrainModuleService->renderBlock($block);
     }
 
-    public function actionLoadScript(string $script)
+    public function actionLoadAsset(string $file)
+    {
+        $path = $_SERVER['DOCUMENT_ROOT'] . '/assets/' . $file;
+        if (file_exists($path))
+        {
+            return Craft::$app->response->sendFile($path, $file);
+        }
+        else
+        {
+            return Craft::$app->getResponse()->setStatusCode(404);
+        }
+    }
+
+    public function actionLoadPreactScript(string $script)
     {
         $filePath = dirname(__DIR__);
         $filePath .= '/assets/js/';
         $filePath .= $script;
-        return Craft::$app->response->sendFile($filePath, $script);
+        if (file_exists($filePath))
+        {
+            return Craft::$app->response->sendFile($filePath, $script);
+        }
+        else
+        {
+            return Craft::$app->getResponse()->setStatusCode(404);
+        }
     }
 }

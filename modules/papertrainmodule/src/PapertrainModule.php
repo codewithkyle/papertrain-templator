@@ -109,7 +109,10 @@ class PapertrainModule extends Module
             function (RegisterUrlRulesEvent $event) {
                 // API
                 $event->rules['papertrain/api/render/<block:.*>'] = 'papertrain-module/default/render-block';
-                $event->rules['papertrain/api/load/<script:.*>'] = 'papertrain-module/default/load-script';
+                $event->rules['papertrain/api/load/<script:.*>'] = 'papertrain-module/default/load-asset';
+
+                // Utility
+                $event->rules['papertrain/core/preact/<script:.*>'] = 'papertrain-module/default/load-core-script';
             }
         );
 

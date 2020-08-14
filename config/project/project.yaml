@@ -1,4 +1,4 @@
-dateModified: 1597368024
+dateModified: 1597409233
 email:
   fromEmail: codingwithkyle@gmail.com
   fromName: 'Papertrain Templator'
@@ -8,10 +8,26 @@ plugins:
     edition: standard
     enabled: true
     schemaVersion: 1.0.0
+  imager:
+    edition: standard
+    enabled: true
+    schemaVersion: 2.0.0
   redactor:
     edition: standard
     enabled: true
     schemaVersion: 2.3.0
+  smith:
+    edition: standard
+    enabled: true
+    schemaVersion: 1.0.0
+  super-table:
+    edition: standard
+    enabled: true
+    schemaVersion: 2.2.1
+  typedlinkfield:
+    edition: standard
+    enabled: true
+    schemaVersion: 1.0.0
 system:
   edition: solo
   live: true

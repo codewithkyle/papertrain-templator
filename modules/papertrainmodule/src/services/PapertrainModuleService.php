@@ -28,6 +28,7 @@ class PapertrainModuleService extends Component
     // Public Methods
     // =========================================================================
 
+
     public function renderBlock(string $block)
     {
         $model = include(FileHelper::normalizePath(Craft::$app->getPath()->getConfigPath() . '/papertrain/blocks/' . $block . '.php'));
@@ -49,13 +50,11 @@ class PapertrainModuleService extends Component
                         break;
                 }
             }
+            
             $html = $view->renderTemplate('_blocks/' . $block, [
                 'data' => $data,
+                'imageFormat' => 'webp',
             ]);
-
-            $publicDir = $_SERVER['DOCUMENT_ROOT'];
-            $css = file_get_contents($publicDir . '/assets/' . $block . '.css');
-            $html .= '<style>' . $css . '</style>';
 
             return TemplateHelper::raw($html);
         }
@@ -81,17 +80,13 @@ class PapertrainModuleService extends Component
             return;
         }
 
-        $publicDir = $_SERVER['DOCUMENT_ROOT'];
         $css = '';
         foreach ($files as $file)
         {
-            try
+            $path = $_SERVER['DOCUMENT_ROOT'] . '/assets/' . $file . '.css';
+            if (file_exists($path))
             {
-                $css .= file_get_contents($publicDir . '/assets/' . $file . '.css');
-            }
-            catch (Exception $e)
-            {
-                Craft::log('Failed to open CSS file: ' . $e->getMessage(), LogLevel::Warning, false, 'pwamodule');
+                $css .= file_get_contents($path);
             }
         }
         $html = '<style>' . $css . '</style>';

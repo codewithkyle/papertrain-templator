@@ -1,0 +1,86 @@
+field: 3a5bd92c-3b75-423a-97d3-6981864e3727
+fieldLayouts:
+  06472a3c-2063-4c9b-8354-d310edda90e5:
+    tabs:
+      -
+        elements:
+          -
+            fieldUid: b3f398ef-8e65-4b21-add5-cc81d3722ef3
+            instructions: null
+            label: null
+            required: true
+            tip: null
+            type: craft\fieldlayoutelements\CustomField
+            warning: null
+            width: 100
+          -
+            fieldUid: e2ae4fd9-6ec6-4eb0-8a8b-925774ad8b32
+            instructions: null
+            label: null
+            required: false
+            tip: null
+            type: craft\fieldlayoutelements\CustomField
+            warning: null
+            width: 100
+        name: Content
+        sortOrder: 1
+fields:
+  b3f398ef-8e65-4b21-add5-cc81d3722ef3:
+    contentColumnType: string
+    fieldGroup: null
+    handle: slides
+    instructions: ''
+    name: Slides
+    searchable: false
+    settings:
+      columns:
+        __assoc__:
+          -
+            - 06f5e647-c7c2-42fc-8012-a0b8a1286a88
+            -
+              __assoc__:
+                -
+                  - width
+                  - ''
+          -
+            - 23d1a553-0297-432a-9633-80b4e076c59e
+            -
+              __assoc__:
+                -
+                  - width
+                  - ''
+          -
+            - 1fc07430-7266-4f32-8694-72fc3d942850
+            -
+              __assoc__:
+                -
+                  - width
+                  - ''
+      contentTable: '{{%stc_4_slides}}'
+      fieldLayout: row
+      maxRows: '3'
+      minRows: '1'
+      placeholderKey: null
+      propagationMethod: all
+      selectionLabel: 'Add a Slide'
+      staticField: ''
+    translationKeyFormat: null
+    translationMethod: site
+    type: verbb\supertable\fields\SuperTableField
+  e2ae4fd9-6ec6-4eb0-8a8b-925774ad8b32:
+    contentColumnType: boolean
+    fieldGroup: null
+    handle: automaticTransition
+    instructions: ''
+    name: 'Automatic Transition'
+    searchable: false
+    settings:
+      default: false
+      offLabel: null
+      onLabel: null
+    translationKeyFormat: null
+    translationMethod: none
+    type: craft\fields\Lightswitch
+handle: carouselHero
+name: 'Carousel Hero'
+sortOrder: 4
