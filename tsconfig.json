@@ -1,0 +1,13 @@
+{
+	"compilerOptions": {
+		"outDir": "_compiled",
+		"allowJs": true,
+		"checkJs": false,
+		"target": "ES2019",
+		"module": "ESNext",
+		"lib": ["dom", "esnext"],
+		"moduleResolution": "Node"
+	},
+	"include": ["templates"],
+	"exclude": ["vendor", "node_modules"]
+}

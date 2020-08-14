@@ -22,7 +22,14 @@ use craft\helpers\App;
 return [
     'id' => App::env('APP_ID') ?: 'CraftCMS',
     'modules' => [
-        'my-module' => \modules\Module::class,
+        'papertrain-module' => [
+            'class' => \modules\papertrainmodule\PapertrainModule::class,
+            'components' => [
+                'papertrainModuleService' => [
+                    'class' => 'modules\papertrainmodule\services\PapertrainModuleService',
+                ],
+            ],
+        ],
     ],
-    //'bootstrap' => ['my-module'],
+    'bootstrap' => ['papertrain-module'],
 ];

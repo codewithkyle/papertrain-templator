@@ -1,0 +1,17 @@
+{
+  "scripts": {
+    "cleanup": "node ./build-tools/cleanup.js",
+		"brixi": "brixi",
+		"compile": "tsc",
+		"sass:dev": "cssmonster --e dev",
+		"sass:prod": "cssmonster",
+		"build": "npm run cleanup && npm run compile && npm run sass:dev && djinnjs -e dev && npm run cleanup",
+		"production": "npm run cleanup && npm run compile && npm run sass:prod && djinnjs -e production && npm run cleanup"
+  },
+  "dependencies": {
+    "brixi": "^0.2.2",
+    "cssmonster": "^0.2.1",
+    "djinnjs": "^0.1.2",
+    "typescript": "^3.9.7"
+  }
+}

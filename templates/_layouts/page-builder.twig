@@ -8,7 +8,13 @@
         <title>{{ entry.title }}</title>
         <meta name="description" content="{{ entry.description }}">
         
+        {{ craft.papertrain.css(['normalize', 'brixi', 'base']) }}
         {% block head %}{% endblock %}
+
+        <script type="module" src="{{ alias('@rootUrl')|trim('/') }}/assets/bootstrap.mjs"></script>
+        <noscript>
+            <link rel="stylesheet" href="{{ alias('@rootUrl')|trim('/') }}/assets/noscript.css" />
+        </noscript>
     </head>
     <body>
         <main>

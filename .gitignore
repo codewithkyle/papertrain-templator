@@ -2,3 +2,8 @@
 /.idea
 /vendor
 .DS_Store
+/node_modules
+/public/assets
+/public/resources-cachebust.json
+/public/broadcaster-worker.min.json
+/public/service-worker.js
