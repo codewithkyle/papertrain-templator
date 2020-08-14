@@ -116,13 +116,13 @@ class PapertrainModule extends Module
         //     }
         // );
 
-        // Event::on(
-        //     UrlManager::class,
-        //     UrlManager::EVENT_REGISTER_CP_URL_RULES,
-        //     function (RegisterUrlRulesEvent $event) {
-        //         $event->rules['cpActionTrigger1'] = 'papertrain-module/default/do-something';
-        //     }
-        // );
+        Event::on(
+            UrlManager::class,
+            UrlManager::EVENT_REGISTER_CP_URL_RULES,
+            function (RegisterUrlRulesEvent $event) {
+                $event->rules['papertrain/api/render/<block:.*>'] = 'papertrain-module/default/render-block';
+            }
+        );
 
         Event::on(
             CraftVariable::class,

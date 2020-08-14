@@ -31,28 +31,15 @@ class DefaultController extends Controller
      *         The actions must be in 'kebab-case'
      * @access protected
      */
-    protected $allowAnonymous = ['index', 'do-something'];
+    protected $allowAnonymous = [
+        'render-block',
+    ];
 
     // Public Methods
     // =========================================================================
 
-    /**
-     * @return mixed
-     */
-    public function actionIndex()
+    public function actionRenderBlock(string $block)
     {
-        $result = 'Welcome to the DefaultController actionIndex() method';
-
-        return $result;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function actionDoSomething()
-    {
-        $result = 'Welcome to the DefaultController actionDoSomething() method';
-
-        return $result;
+        return PapertrainModule::getInstance()->papertrainModuleService->renderBlock($block);
     }
 }

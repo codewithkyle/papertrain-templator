@@ -28,4 +28,9 @@ class PapertrainModuleVariable
     {
         return PapertrainModule::getInstance()->papertrainModuleService->injectCriticalCSS($css);
     }
+
+    public function renderBlock(string $block)
+    {
+        return  PapertrainModule::getInstance()->papertrainModuleService->renderBlock($block);
+    }
 }
