@@ -28,6 +28,15 @@ class PapertrainModuleService extends Component
     // Public Methods
     // =========================================================================
 
+    public function getConfig()
+    {
+        $path = FileHelper::normalizePath(Craft::$app->getPath()->getConfigPath() . '/papertrain/papertrain.json');
+        if (file_exists($path))
+        {
+            return $path;
+        }
+        return null;
+    }
 
     public function renderBlock(string $block)
     {

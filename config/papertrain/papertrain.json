@@ -16,7 +16,7 @@
     "blocks": {
         "homepage-hero": {
             "group": "heros",
-            "label": "Homepager Hero"
+            "label": "Homepage Hero"
         },
         "rich-text": {
             "group": "copy",
@@ -25,6 +25,11 @@
         "spacer-block": {
             "group": "utilities",
             "label": "Spacer"
+        },
+        "carousel-hero": {
+            "group": "heros",
+            "label": "Carousel Hero",
+            "js": true
         }
     }
 }

@@ -68,4 +68,11 @@ class DefaultController extends Controller
             return Craft::$app->getResponse()->setStatusCode(404);
         }
     }
+
+    public function actionLoadConfig()
+    {
+        $this->requireAcceptsJson();
+        $path = PapertrainModule::getInstance()->papertrainModuleService->getConfig();
+        return Craft::$app->response->sendFile($path, 'config.json');
+    }
 }

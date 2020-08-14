@@ -110,6 +110,7 @@ class PapertrainModule extends Module
                 // API
                 $event->rules['papertrain/api/render/<block:.*>'] = 'papertrain-module/default/render-block';
                 $event->rules['papertrain/api/load/<script:.*>'] = 'papertrain-module/default/load-asset';
+                $event->rules['papertrain/api/config.json'] = 'papertrain-module/default/load-config';
 
                 // Utility
                 $event->rules['papertrain/core/preact/<script:.*>'] = 'papertrain-module/default/load-core-script';
