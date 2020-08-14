@@ -1,0 +1,17 @@
+rich-text-block{
+    display: block;
+    width: 100%;
+    max-width: 768px;
+    margin: 0 auto;
+    padding: 1rem;
+
+    p{
+        margin-bottom: 1.5rem;
+        line-height: 1.618;
+        color: var(--grey-800);
+    }
+
+    *:last-child{
+        margin-bottom: 0;
+    }
+}

@@ -7,7 +7,7 @@
 {% block head %}
     {% set blocks = [] %}
     {% for block in entry.pageBuilder|slice(0, 1) %}
-        {% set blocks = blocks|merge([block.type|kebab]) %}
+        {% set blocks = blocks|merge([block.type|kebab ~ "-block"]) %}
     {% endfor %}
     {{ craft.papertrain.css(blocks) }}
 {% endblock %}
@@ -16,7 +16,7 @@
     {% for block in entry.pageBuilder %}
         {% set data = block %}
         <template-block style="display: block;width: 100%;position: relative;">
-            {% include "_blocks/" ~ block.type|kebab %}
+            {% include "_blocks/" ~ block.type|kebab ~ "-block" %}
         </template-block>
     {% endfor %}
 {% endblock %}
