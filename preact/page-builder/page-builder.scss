@@ -1,3 +1,5 @@
+@import "../settings.scss";
+
 .page-builder {
     display: grid;
     grid-template-columns: 320px 1fr;
@@ -5,8 +7,8 @@
     width: 100%;
 
     aside {
-        background-color: var(--white);
-        border-right: 1px solid var(--grey-300);
+        background-color: $white;
+        border-right: 1px solid $grey-300;
         padding: 2rem;
     }
 
@@ -19,16 +21,24 @@
         .page {
             width: 100%;
             max-width: 1920px;
-            background-color: var(--white);
-            border: 1px solid var(--grey-300);
+            background-color: $white;
+            border: 1px solid $grey-300;
             position: relative;
             display: block;
             margin: 0 auto;
-            transition: all 150ms var(--ease-in-out);
+            transition: all 150ms $ease-in-out;
 
             &.can-drop {
-                border-color: var(--primary-400);
-                box-shadow: 0 0 0 4px var(--primary-200);
+                border-color: $primary-400;
+                box-shadow: 0 0 0 4px $primary-200;
+            }
+
+            .pt-instructions {
+                display: block;
+                width: 100%;
+                text-align: center;
+                padding: 4rem;
+                color: $grey-700;
             }
 
             .drop-zone {
@@ -39,8 +49,8 @@
                 user-select: none;
 
                 p {
-                    border: 1px dashed var(--primary-400);
-                    color: var(--primary-700);
+                    border: 1px dashed $primary-400;
+                    color: $primary-700;
                     display: block;
                     width: 100%;
                     padding: 2rem;

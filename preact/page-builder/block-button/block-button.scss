@@ -1,3 +1,5 @@
+@import "../../settings.scss";
+
 .button-block {
     padding: 0 0.5rem;
     border-radius: 0.25rem;
@@ -7,26 +9,27 @@
     flex-flow: row nowrap;
     align-items: center;
     cursor: move;
-    transition: all 150ms var(--ease-in-out);
-    background-color: var(--white);
-    color: var(--grey-700);
-    font-size: var(--font-sm);
+    transition: all 150ms $ease-in-out;
+    background-color: $white;
+    color: $grey-700;
+    font-size: $font-sm;
     margin-bottom: 0.5rem;
-    border: 1px solid var(--grey-200);
+    border: 1px solid $grey-200;
 
     &:hover {
-        box-shadow: var(--shadow-md);
-        color: var(--grey-800);
+        box-shadow: $shadow-md;
+        color: $primary-700;
+        border-color: $primary-400;
     }
 
     &:active {
         box-shadow: none;
-        background-color: var(--grey-100);
-        color: var(--grey-900);
+        background-color: $grey-100;
+        color: $grey-900;
     }
 
-    &:focus {
-        border-color: var(--grey-400);
+    &:focus-visible {
+        border-color: $primary-400;
     }
 
     &.is-dragging {

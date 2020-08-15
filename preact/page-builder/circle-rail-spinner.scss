@@ -1,10 +1,12 @@
+@import "../settings.scss";
+
 circle-rail-spinner {
     display: inline-block;
     height: 64px;
     width: 64px;
     box-sizing: border-box;
-    border: 4px solid var(--neutral-200);
-    border-top: 4px solid var(--primary-700);
+    border: 4px solid $neutral-200;
+    border-top: 4px solid $primary-700;
     border-radius: 50%;
     animation: circleRailSpinner 900ms infinite linear;
 

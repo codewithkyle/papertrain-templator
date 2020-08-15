@@ -1,9 +1,11 @@
+@import "../../settings.scss";
+
 .title-input {
     display: inline-block;
-    font-size: var(--font-lg);
-    font-weight: var(--font-medium);
-    color: var(--grey-900);
-    transition: all 150ms var(--ease-in-out);
+    font-size: $font-lg;
+    font-weight: $font-medium;
+    color: $grey-900;
+    transition: all 150ms $ease-in-out;
     height: 36px;
     line-height: 36px;
     width: 400px;
@@ -15,12 +17,12 @@
     border-color: transparent;
 
     &:hover {
-        border-color: var(--grey-200);
+        border-color: $grey-200;
     }
 
     &:focus {
-        border-color: var(--primary-400);
-        box-shadow: 0 0 0 5px var(--primary-100);
-        background-color: var(--white);
+        border-color: $primary-400;
+        box-shadow: 0 0 0 5px $primary-100;
+        background-color: $white;
     }
 }

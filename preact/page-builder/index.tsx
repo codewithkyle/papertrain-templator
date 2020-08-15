@@ -388,7 +388,7 @@ class PageBuilder extends Component<{}, PageBuilderState> {
         } else {
             aside = (
                 // @ts-ignore
-                <div className="w-full h-full" flex="justify-center items-center">
+                <div style={{ width: "100%", height: "100%", display: "flex", justifyContent: "center", alignItems: "center" }}>
                     {/* 
                     // @ts-ignore */}
                     <circle-rail-spinner role="alert" aria-busy="true" aria-live="polite"></circle-rail-spinner>;
@@ -401,7 +401,7 @@ class PageBuilder extends Component<{}, PageBuilderState> {
         if (this.state.view.length) {
             view = this.state.view.map((handle, index) => this.renderBlock(handle, index));
         } else if (!this.state.drag.over) {
-            view = <p className="block w-full text-center p-4 font-grey-700">Click and drag the block on the left to begin building a new page.</p>;
+            view = <p className="pt-instructions">Click and drag the block on the left to begin building a new page.</p>;
         } else {
             view = (
                 <div className="drop-zone">
