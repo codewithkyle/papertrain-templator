@@ -129,14 +129,6 @@ export class Block extends Component<BlockProps, BlockState> {
                             ></path>
                         </svg>
                     </button>
-                    <button aria-label={`delete block ${this.props.index}`} onClick={this.removeBlock} className="pt-block-button -danger">
-                        <svg aria-hidden="true" focusable="false" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
-                            <path
-                                fill="currentColor"
-                                d="M432 32H312l-9.4-18.7A24 24 0 0 0 281.1 0H166.8a23.72 23.72 0 0 0-21.4 13.3L136 32H16A16 16 0 0 0 0 48v32a16 16 0 0 0 16 16h416a16 16 0 0 0 16-16V48a16 16 0 0 0-16-16zM53.2 467a48 48 0 0 0 47.9 45h245.8a48 48 0 0 0 47.9-45L416 128H32z"
-                            ></path>
-                        </svg>
-                    </button>
                     <button aria-label={`block ${this.props.index} info`} className="pt-block-button -info">
                         <svg aria-hidden="true" focusable="false" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 512">
                             <path
@@ -150,6 +142,14 @@ export class Block extends Component<BlockProps, BlockState> {
                             <dt>Group:</dt>
                             <dd>{this.props.group}</dd>
                         </dl>
+                    </button>
+                    <button aria-label={`delete block ${this.props.index}`} onClick={this.removeBlock} className="pt-block-button -danger">
+                        <svg aria-hidden="true" focusable="false" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+                            <path
+                                fill="currentColor"
+                                d="M432 32H312l-9.4-18.7A24 24 0 0 0 281.1 0H166.8a23.72 23.72 0 0 0-21.4 13.3L136 32H16A16 16 0 0 0 0 48v32a16 16 0 0 0 16 16h416a16 16 0 0 0 16-16V48a16 16 0 0 0-16-16zM53.2 467a48 48 0 0 0 47.9 45h245.8a48 48 0 0 0 47.9-45L416 128H32z"
+                            ></path>
+                        </svg>
                     </button>
                 </div>
                 <div style={{ width: "100%", position: "relative", display: "block" }} dangerouslySetInnerHTML={{ __html: this.props.html }}></div>

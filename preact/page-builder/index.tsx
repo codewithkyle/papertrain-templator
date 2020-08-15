@@ -432,8 +432,16 @@ class PageBuilder extends Component<{}, PageBuilderState> {
                         </div>
                     </div>
                 </main>
-                <div onDragEnter={this.startBodyDrag} onDragLeave={this.endBodyDrag} className="capture-scroll top"></div>
-                <div onDragEnter={this.startBodyDrag} onDragLeave={this.endBodyDrag} className="capture-scroll bottom"></div>
+                <div
+                    onDragEnter={this.startBodyDrag}
+                    onDragLeave={this.endBodyDrag}
+                    className={`capture-scroll top ${this.state.drag.handle !== null || this.state.drag.index !== null ? "is-active" : ""}`}
+                ></div>
+                <div
+                    onDragEnter={this.startBodyDrag}
+                    onDragLeave={this.endBodyDrag}
+                    className={`capture-scroll bottom ${this.state.drag.handle !== null || this.state.drag.index !== null ? "is-active" : ""}`}
+                ></div>
             </Fragment>
         );
     }
