@@ -271,6 +271,20 @@ class PageBuilder extends Component<{}, PageBuilderState> {
 
     private renderBlock = (handle: string, index: number) => {
         let html = this.state.blockData[handle].html;
+        let block = null;
+        for (let i = 0; i < this.state.blocks.length; i++) {
+            if (this.state.blocks[i].handle === handle) {
+                block = this.state.blocks[i];
+                break;
+            }
+        }
+        let group = null;
+        for (let i = 0; i < this.state.groups.length; i++) {
+            if (this.state.groups[i].handle === block.group) {
+                group = this.state.groups[i];
+                break;
+            }
+        }
         return (
             <Block
                 index={index}
@@ -281,6 +295,8 @@ class PageBuilder extends Component<{}, PageBuilderState> {
                 startBlockShift={this.startBlockShift.bind(this)}
                 keyboardCallback={this.keyboardShift.bind(this)}
                 keyboardFocusedIndex={this.state.keyboardFocusedIndex}
+                label={block.label}
+                group={group.label}
             />
         );
     };

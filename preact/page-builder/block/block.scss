@@ -73,6 +73,9 @@
         opacity: 0;
         visibility: visible;
         transition: all 150ms var(--ease-in-out);
+        display: flex;
+        align-items: center;
+        flex-flow: row nowrap;
 
         .pt-block-button {
             width: 36px;
@@ -81,6 +84,7 @@
             display: inline-flex;
             justify-content: center;
             align-items: center;
+            flex-flow: column wrap;
             color: var(--grey-700);
             transition: all 150ms var(--ease-in-out);
 
@@ -88,10 +92,62 @@
                 &::before {
                     background-color: var(--danger-900);
                 }
+                svg {
+                    width: 15px;
+                    height: 15px;
+                }
             }
 
             &.-move {
                 cursor: move;
+            }
+
+            &.-info {
+                svg {
+                    width: 15px;
+                    height: 15px;
+                }
+
+                &:hover {
+                    .pt-block-info {
+                        opacity: 1;
+                        visibility: visible;
+                    }
+                }
+
+                .pt-block-info {
+                    opacity: 0;
+                    visibility: hidden;
+                    transition: all 150ms var(--ease-in-out);
+                    position: absolute;
+                    top: calc(100% + 0.25rem);
+                    right: 0;
+                    padding: 0.5rem;
+                    border-radius: 0.25rem;
+                    box-shadow: var(--shadow-lg);
+                    border: 1px solid var(--grey-100);
+                    color: var(--grey-800);
+                    background-color: var(--white);
+                    font-size: var(--font-sm);
+                    line-height: 23px;
+                    width: 225px;
+
+                    dt,
+                    dd {
+                        display: inline-block;
+                        text-align: left;
+                    }
+
+                    dt {
+                        width: 33%;
+                        font-weight: var(--font-medium);
+                    }
+
+                    dd {
+                        width: 66%;
+                        padding-left: 0.5rem;
+                    }
+                }
             }
 
             &:hover,
