@@ -196,12 +196,28 @@ class PageBuilder extends Component<{}, PageBuilderState> {
         this.setState(updatedState);
     }
 
-    private shiftBlocks(indexToShift: number, targetIndex: number) {
-        const updatedState = { ...this.state };
-        const block = updatedState.view[indexToShift];
-        updatedState.view.splice(indexToShift, 1);
-        updatedState.view.splice(targetIndex, 0, block);
-        this.setState(updatedState);
+    private shiftBlocks(indexToShift: number, targetIndex: number, direction: number) {
+        if (direction !== 0) {
+            const updatedState = { ...this.state };
+            const block = updatedState.view[indexToShift];
+            updatedState.view.splice(indexToShift, 1);
+            if (direction === -1) {
+                console.log(indexToShift, targetIndex);
+                updatedState.view.splice(targetIndex, 0, block);
+            } else {
+                updatedState.view.splice(targetIndex + 1, 0, block);
+            }
+            this.setState(updatedState);
+        }
+        setTimeout(() => {
+            const blockEl = document.body.querySelector(`.pt-block[data-index="${targetIndex}"]`);
+            if (blockEl) {
+                blockEl.scrollIntoView({
+                    behavior: "smooth",
+                    block: "center",
+                });
+            }
+        }, 150);
     }
 
     private startBlockShift(index: number) {

@@ -12,7 +12,8 @@ type BlockProps = {
 };
 
 type BlockState = {
-    dragOver: boolean;
+    style: "dropzone" | "dragging" | null;
+    dropPosition: "top" | "bottom" | null;
 };
 
 export class Block extends Component<BlockProps, BlockState> {
@@ -21,7 +22,8 @@ export class Block extends Component<BlockProps, BlockState> {
     constructor() {
         super();
         this.state = {
-            dragOver: false,
+            style: null,
+            dropPosition: null,
         };
         this.block = createRef();
     }
@@ -37,34 +39,70 @@ export class Block extends Component<BlockProps, BlockState> {
             document.body.appendChild(noop);
         }
         e.dataTransfer.setDragImage(noop, 0, 0);
+        this.setState({ style: "dragging" });
         this.props.startBlockShift(this.props.index);
     };
 
     private dragOver: EventListener = (e: DragEvent) => {
         if (this.props.shiftingBlock !== this.props.index && this.props.shiftingBlock !== null) {
-            this.setState({ dragOver: true });
+            const mousePos = {
+                x: e.clientX,
+                y: e.clientY,
+            };
+            const blockBounds = this.block.current.getBoundingClientRect();
+            let shiftDirection = this.hitDetect(mousePos, blockBounds);
+            this.setState({ style: "dropzone", dropPosition: shiftDirection === -1 ? "top" : "bottom" });
         }
     };
 
     private dragLeave: EventListener = (e: DragEvent) => {
         if (this.props.shiftingBlock !== this.props.index) {
-            this.setState({ dragOver: false });
+            this.setState({ style: null });
         }
     };
+
+    private hitDetect(mousePos: { x: number; y: number }, block: { x: number; y: number; height: number }): number {
+        const halfway = block.y + block.height / 2;
+        if (mousePos.y >= halfway) {
+            return 1;
+        }
+        return -1;
+    }
 
     private handleDrop: EventListener = (e: DragEvent) => {
         e.preventDefault();
         if (this.props.shiftingBlock !== null && this.props.shiftingBlock !== this.props.index) {
-            this.props.shiftBlocks(this.props.shiftingBlock, this.props.index);
+            const mousePos = {
+                x: e.clientX,
+                y: e.clientY,
+            };
+            const blockBounds = this.block.current.getBoundingClientRect();
+            let shiftDirection = this.hitDetect(mousePos, blockBounds);
+            if ((shiftDirection === -1 && this.props.shiftingBlock === this.props.index - 1) || (shiftDirection === 1 && this.props.shiftingBlock === this.props.index + 1)) {
+                shiftDirection = 0;
+            }
+            this.props.shiftBlocks(this.props.shiftingBlock, this.props.index, shiftDirection);
         }
-        this.setState({ dragOver: false });
+        this.setState({ style: null });
+    };
+
+    private endDrag: EventListener = (e: DragEvent) => {
+        e.preventDefault();
+        this.setState({ style: null });
     };
 
     render() {
         return (
-            <div ref={this.block} className={`pt-block ${this.state.dragOver ? "can-drop" : ""}`} onDragOver={this.dragOver} onDrop={this.handleDrop} onDragLeave={this.dragLeave}>
+            <div
+                ref={this.block}
+                className={`pt-block ${this.state.style} ${this.state.dropPosition ? `drop-${this.state.dropPosition}` : ""}`}
+                onDragOver={this.dragOver}
+                onDrop={this.handleDrop}
+                onDragLeave={this.dragLeave}
+                data-index={this.props.index}
+            >
                 <div className="pt-block-menu">
-                    <button aria-label="move block position" onDragStart={this.startDrag} className="pt-block-button -move" draggable={true}>
+                    <button aria-label="move block position" onDragStart={this.startDrag} onDragEnd={this.endDrag} className="pt-block-button -move" draggable={true}>
                         <svg aria-hidden="true" focusable="false" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
                             <path
                                 fill="currentColor"
