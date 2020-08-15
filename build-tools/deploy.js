@@ -8,7 +8,7 @@ ghPages.publish(
             email: "codingwithkyle@gmail.com",
         },
         repo: "https://" + process.env.ACCESS_TOKEN + "@github.com/codewithkyle/papertrain-templator.git",
-        silent: false,
+        silent: true,
     },
     (error) => {
         if (error) {
