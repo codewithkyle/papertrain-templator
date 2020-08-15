@@ -13,6 +13,7 @@ type BlockProps = {
     keyboardFocusedIndex: number;
     label: string;
     group: string;
+    newBlock: string;
 };
 
 type BlockState = {
@@ -60,7 +61,7 @@ export class Block extends Component<BlockProps, BlockState> {
     };
 
     private dragOver: EventListener = (e: DragEvent) => {
-        if (this.props.shiftingBlock !== this.props.index) {
+        if ((this.props.shiftingBlock !== this.props.index && this.props.shiftingBlock !== null) || this.props.newBlock) {
             const mousePos = {
                 x: e.clientX,
                 y: e.clientY,
@@ -158,7 +159,7 @@ export class Block extends Component<BlockProps, BlockState> {
                         </svg>
                     </button>
                 </div>
-                <div style={{ width: "100%", position: "relative", display: "block" }} dangerouslySetInnerHTML={{ __html: this.props.html }}></div>
+                <div className="pt-block-shell" style={{ width: "100%", position: "relative", display: "block" }} dangerouslySetInnerHTML={{ __html: this.props.html }}></div>
             </div>
         );
     }

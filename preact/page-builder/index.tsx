@@ -149,6 +149,14 @@ class PageBuilder extends Component<{}, PageBuilderState> {
                 left: 0,
                 behavior: "smooth",
             });
+            this.setState({
+                drag: {
+                    over: false,
+                    handle: null,
+                    index: null,
+                    scrollDirection: 0,
+                },
+            });
         }, 150);
     }
 
@@ -211,6 +219,14 @@ class PageBuilder extends Component<{}, PageBuilderState> {
                     block: "center",
                 });
             }
+            this.setState({
+                drag: {
+                    over: false,
+                    handle: null,
+                    index: null,
+                    scrollDirection: 0,
+                },
+            });
         }, 150);
     }
 
@@ -272,14 +288,6 @@ class PageBuilder extends Component<{}, PageBuilderState> {
         if (this.state.drag.handle && !this.state.view.length) {
             this.loadBlock(this.state.drag.handle);
         }
-        this.setState({
-            drag: {
-                over: false,
-                handle: null,
-                index: null,
-                scrollDirection: 0,
-            },
-        });
     };
 
     private handleReset: EventListener = () => {
@@ -376,6 +384,12 @@ class PageBuilder extends Component<{}, PageBuilderState> {
         );
     };
 
+    componentDidUpdate() {
+        document.body.querySelectorAll("img").forEach((el) => {
+            el.draggable = false;
+        });
+    }
+
     private renderBlock = (handle: string, index: number) => {
         let html = this.state.blockData[handle].html;
         let block = null;
@@ -404,6 +418,7 @@ class PageBuilder extends Component<{}, PageBuilderState> {
                 keyboardFocusedIndex={this.state.keyboardFocusedIndex}
                 label={block.label}
                 group={group.label}
+                newBlock={this.state.drag.handle}
             />
         );
     };

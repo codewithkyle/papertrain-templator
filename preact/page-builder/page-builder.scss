@@ -97,7 +97,7 @@
 
     &::before {
         content: "";
-        opacity: 0.6;
+        opacity: 0.75;
         background-color: $grey-100;
         position: absolute;
         top: 0;
@@ -118,8 +118,8 @@
         }
 
         circle-rail-spinner {
-            width: 128px;
-            height: 128px;
+            width: 96px;
+            height: 96px;
             border-color: $neutral-100;
             border-top-color: $primary-700;
             border-width: 5px;
