@@ -44,21 +44,17 @@ export class Block extends Component<BlockProps, BlockState> {
     };
 
     private dragOver: EventListener = (e: DragEvent) => {
-        if (this.props.shiftingBlock !== this.props.index && this.props.shiftingBlock !== null) {
-            const mousePos = {
-                x: e.clientX,
-                y: e.clientY,
-            };
-            const blockBounds = this.block.current.getBoundingClientRect();
-            let shiftDirection = this.hitDetect(mousePos, blockBounds);
-            this.setState({ style: "dropzone", dropPosition: shiftDirection === -1 ? "top" : "bottom" });
-        }
+        const mousePos = {
+            x: e.clientX,
+            y: e.clientY,
+        };
+        const blockBounds = this.block.current.getBoundingClientRect();
+        let shiftDirection = this.hitDetect(mousePos, blockBounds);
+        this.setState({ style: "dropzone", dropPosition: shiftDirection === -1 ? "top" : "bottom" });
     };
 
     private dragLeave: EventListener = (e: DragEvent) => {
-        if (this.props.shiftingBlock !== this.props.index) {
-            this.setState({ style: null });
-        }
+        this.setState({ style: null, dropPosition: null });
     };
 
     private hitDetect(mousePos: { x: number; y: number }, block: { x: number; y: number; height: number }): number {
@@ -71,7 +67,7 @@ export class Block extends Component<BlockProps, BlockState> {
 
     private handleDrop: EventListener = (e: DragEvent) => {
         e.preventDefault();
-        if (this.props.shiftingBlock !== null && this.props.shiftingBlock !== this.props.index) {
+        if (this.props.shiftingBlock !== this.props.index) {
             const mousePos = {
                 x: e.clientX,
                 y: e.clientY,

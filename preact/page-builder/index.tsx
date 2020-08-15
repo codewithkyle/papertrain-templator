@@ -86,7 +86,7 @@ class PageBuilder extends Component<{}, PageBuilderState> {
         }
     }
 
-    private async fetchBlock(handle: string) {
+    private async fetchBlock(handle: string): Promise<string> {
         // Load CSS
         const stylesheet = document.createElement("link");
         stylesheet.href = `${location.origin}/assets/${handle}.css`;
@@ -104,13 +104,30 @@ class PageBuilder extends Component<{}, PageBuilderState> {
             credentials: "include",
         });
 
-        const htmlResponse = await htmlRequest.text();
-        const updatedState = { ...this.state };
-        updatedState.blockData[handle] = {
-            html: htmlResponse,
-        };
-        updatedState.view.push(handle);
-        this.setState(updatedState);
+        return await htmlRequest.text();
+    }
+
+    private async loadBlock(handle: string, targetIndex: number = null, direction: number = null) {
+        if (!this.state.blockData?.[handle]) {
+            const html = await this.fetchBlock(handle);
+            const updatedState = { ...this.state };
+            updatedState.blockData[handle] = {
+                html: html,
+            };
+            if (targetIndex !== null && direction !== null) {
+                if (direction === -1) {
+                    console.log(updatedState.view);
+                    updatedState.view.splice(targetIndex, 0, handle);
+                } else {
+                    updatedState.view.splice(targetIndex + 1, 0, handle);
+                }
+            } else {
+                updatedState.view.push(handle);
+            }
+            this.setState(updatedState);
+        } else {
+            this.setState({ view: [...this.state.view, handle] });
+        }
 
         setTimeout(() => {
             this.view.current.scrollTo({
@@ -119,21 +136,6 @@ class PageBuilder extends Component<{}, PageBuilderState> {
                 behavior: "smooth",
             });
         }, 150);
-    }
-
-    private loadBlock(handle: string) {
-        if (!this.state.blockData?.[handle]) {
-            this.fetchBlock(handle);
-        } else {
-            this.setState({ view: [...this.state.view, handle] });
-            setTimeout(() => {
-                this.view.current.scrollTo({
-                    top: this.view.current.scrollHeight,
-                    left: 0,
-                    behavior: "smooth",
-                });
-            }, 150);
-        }
     }
 
     private dragOver: EventListener = (e: DragEvent) => {
@@ -152,7 +154,7 @@ class PageBuilder extends Component<{}, PageBuilderState> {
 
     private handleDrop: EventListener = (e: DragEvent) => {
         e.preventDefault();
-        if (this.state.drag.handle) {
+        if (this.state.drag.handle && !this.state.view.length) {
             this.loadBlock(this.state.drag.handle);
         }
         this.setState({
@@ -194,21 +196,36 @@ class PageBuilder extends Component<{}, PageBuilderState> {
         const updatedState = { ...this.state };
         updatedState.view.splice(index, 1);
         this.setState(updatedState);
+
+        // Get any button and focus then blur it -- shifted blocks maintain focus due to the Preact dynamic rendering
+        const button = document.body.querySelector("button");
+        button.focus();
+        button.blur();
     }
 
     private shiftBlocks(indexToShift: number, targetIndex: number, direction: number) {
+        if (indexToShift === null && this.state.drag.handle) {
+            console.log(`drop new block ${direction === -1 ? "above" : "below"} ${targetIndex}`);
+            this.loadBlock(this.state.drag.handle, targetIndex, direction);
+            return;
+        }
         if (direction !== 0) {
             const updatedState = { ...this.state };
             const block = updatedState.view[indexToShift];
             updatedState.view.splice(indexToShift, 1);
             if (direction === -1) {
-                console.log(indexToShift, targetIndex);
                 updatedState.view.splice(targetIndex, 0, block);
             } else {
                 updatedState.view.splice(targetIndex + 1, 0, block);
             }
             this.setState(updatedState);
         }
+
+        // Get any button and focus then blur it -- shifted blocks maintain focus due to the Preact dynamic rendering
+        const button = document.body.querySelector("button");
+        button.focus();
+        button.blur();
+
         setTimeout(() => {
             const blockEl = document.body.querySelector(`.pt-block[data-index="${targetIndex}"]`);
             if (blockEl) {
