@@ -141,6 +141,7 @@ class PageBuilder extends Component<{}, PageBuilderState> {
         }
 
         setTimeout(() => {
+            // TODO: figure of if we need to scroll to a specific block or to the end
             this.view.current.scrollTo({
                 top: this.view.current.scrollHeight,
                 left: 0,
