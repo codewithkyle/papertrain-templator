@@ -143,12 +143,25 @@ class PageBuilder extends Component<{}, PageBuilderState> {
         }
 
         setTimeout(() => {
-            // TODO: figure of if we need to scroll to a specific block or to the end
-            this.view.current.scrollTo({
-                top: this.view.current.scrollHeight,
-                left: 0,
-                behavior: "smooth",
-            });
+            if (targetIndex !== null && direction !== null) {
+                let index = targetIndex + direction;
+                const blockEl = document.body.querySelector(`.pt-block[data-index="${index}"]`);
+                if (blockEl) {
+                    const bounds = blockEl.getBoundingClientRect();
+                    const center = bounds.top + bounds.height / 2;
+                    this.view.current.scrollTo({
+                        top: center,
+                        left: 0,
+                        behavior: "smooth",
+                    });
+                }
+            } else {
+                this.view.current.scrollTo({
+                    top: this.view.current.scrollHeight,
+                    left: 0,
+                    behavior: "smooth",
+                });
+            }
             this.setState({
                 drag: {
                     over: false,
@@ -214,9 +227,12 @@ class PageBuilder extends Component<{}, PageBuilderState> {
         setTimeout(() => {
             const blockEl = document.body.querySelector(`.pt-block[data-index="${targetIndex}"]`);
             if (blockEl) {
-                blockEl.scrollIntoView({
+                const bounds = blockEl.getBoundingClientRect();
+                const center = bounds.top + bounds.height / 2;
+                this.view.current.scrollTo({
+                    top: center,
+                    left: 0,
                     behavior: "smooth",
-                    block: "center",
                 });
             }
             this.setState({
@@ -251,7 +267,6 @@ class PageBuilder extends Component<{}, PageBuilderState> {
         if (newIndex < 0 || newIndex >= this.state.view.length) {
             return;
         }
-        console.log(this.state.keyboardFocusedIndex, newIndex, direction);
 
         const updatedState = { ...this.state };
         const block = updatedState.view[this.state.keyboardFocusedIndex];
@@ -265,6 +280,33 @@ class PageBuilder extends Component<{}, PageBuilderState> {
         const updatedState = { ...this.state };
         updatedState.drag.handle = handle;
         this.setState(updatedState);
+    }
+
+    private cloneBlock(index: number) {
+        const updatedState = { ...this.state };
+        const block = updatedState.view[index];
+        updatedState.view.splice(index, 0, block);
+        this.setState(updatedState);
+        setTimeout(() => {
+            const blockEl = document.body.querySelector(`.pt-block[data-index="${index + 1}"]`);
+            if (blockEl) {
+                const bounds = blockEl.getBoundingClientRect();
+                const center = bounds.top + bounds.height / 2;
+                this.view.current.scrollTo({
+                    top: center,
+                    left: 0,
+                    behavior: "smooth",
+                });
+            }
+            this.setState({
+                drag: {
+                    over: false,
+                    handle: null,
+                    index: null,
+                    scrollDirection: 0,
+                },
+            });
+        }, 150);
     }
 
     // Event Listeners =========================================================================================================
@@ -384,12 +426,6 @@ class PageBuilder extends Component<{}, PageBuilderState> {
         );
     };
 
-    componentDidUpdate() {
-        document.body.querySelectorAll("img").forEach((el) => {
-            el.draggable = false;
-        });
-    }
-
     private renderBlock = (handle: string, index: number) => {
         let html = this.state.blockData[handle].html;
         let block = null;
@@ -419,11 +455,19 @@ class PageBuilder extends Component<{}, PageBuilderState> {
                 label={block.label}
                 group={group.label}
                 newBlock={this.state.drag.handle}
+                cloneBlockCallback={this.cloneBlock.bind(this)}
+                handle={block.handle}
             />
         );
     };
 
-    // Preact Functions =========================================================================================================
+    // Preact Functions =========================================================================================================\
+
+    componentDidUpdate() {
+        document.body.querySelectorAll("img").forEach((el) => {
+            el.draggable = false;
+        });
+    }
 
     componentDidMount() {
         this.fetchBlocks();

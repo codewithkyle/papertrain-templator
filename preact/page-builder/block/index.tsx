@@ -14,6 +14,8 @@ type BlockProps = {
     label: string;
     group: string;
     newBlock: string;
+    cloneBlockCallback: Function;
+    handle: string;
 };
 
 type BlockState = {
@@ -106,6 +108,10 @@ export class Block extends Component<BlockProps, BlockState> {
         }
     };
 
+    private cloneBlock: EventListener = () => {
+        this.props.cloneBlockCallback(this.props.index);
+    };
+
     // Preact Functions =========================================================================================================
 
     render() {
@@ -122,7 +128,7 @@ export class Block extends Component<BlockProps, BlockState> {
             >
                 <div className="pt-block-menu">
                     <button
-                        aria-label="move block position"
+                        aria-label={`move ${this.props.label} block's position`}
                         onDragStart={this.startDrag}
                         onDragEnd={this.endDrag}
                         className="pt-block-button -move"
@@ -136,7 +142,24 @@ export class Block extends Component<BlockProps, BlockState> {
                             ></path>
                         </svg>
                     </button>
-                    <button aria-label={`block ${this.props.index} info`} className="pt-block-button -info">
+                    <button aria-label={`clone ${this.props.label} block`} onClick={this.cloneBlock} className="pt-block-button">
+                        <svg aria-hidden="true" focusable="false" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+                            <g class="fa-group">
+                                <path
+                                    class="fa-secondary"
+                                    fill="currentColor"
+                                    d="M48 512a48 48 0 0 1-48-48V176a48 48 0 0 1 48-48h48v208a80.09 80.09 0 0 0 80 80h208v48a48 48 0 0 1-48 48H48z"
+                                    opacity="0.4"
+                                ></path>
+                                <path
+                                    class="fa-primary"
+                                    fill="currentColor"
+                                    d="M512 48v288a48 48 0 0 1-48 48H176a48 48 0 0 1-48-48V48a48 48 0 0 1 48-48h288a48 48 0 0 1 48 48z"
+                                ></path>
+                            </g>
+                        </svg>
+                    </button>
+                    <button aria-label={`${this.props.label} block info`} className="pt-block-button -info">
                         <svg aria-hidden="true" focusable="false" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 512">
                             <path
                                 fill="currentColor"
@@ -150,7 +173,7 @@ export class Block extends Component<BlockProps, BlockState> {
                             <dd>{this.props.group}</dd>
                         </dl>
                     </button>
-                    <button aria-label={`delete block ${this.props.index}`} onClick={this.removeBlock} className="pt-block-button -danger">
+                    <button aria-label={`delete ${this.props.label} block`} onClick={this.removeBlock} className="pt-block-button -danger">
                         <svg aria-hidden="true" focusable="false" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
                             <path
                                 fill="currentColor"
