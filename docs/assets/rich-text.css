@@ -1,0 +1,51 @@
+rich-text {
+  display: block;
+  width: 100%;
+  max-width: 768px;
+  margin: 0 auto;
+  padding: 1rem;
+  color: var(--grey-800);
+}
+
+rich-text h1,
+rich-text h2,
+rich-text h3,
+rich-text h4,
+rich-text h5,
+rich-text h6 {
+  margin-bottom: 1.5rem;
+  line-height: 1.375;
+}
+
+rich-text h1 {
+  font-size: var(--font-5xl);
+}
+
+rich-text h2 {
+  font-size: var(--font-4xl);
+}
+
+rich-text h3 {
+  font-size: var(--font-3xl);
+}
+
+rich-text h4 {
+  font-size: var(--font-2xl);
+}
+
+rich-text h5 {
+  font-size: var(--font-xl);
+}
+
+rich-text h6 {
+  font-size: var(--font-lg);
+}
+
+rich-text p {
+  margin-bottom: 1.5rem;
+  line-height: 1.618;
+}
+
+rich-text *:last-child {
+  margin-bottom: 0;
+}
