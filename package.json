@@ -8,7 +8,8 @@
         "build": "npm run cleanup && npm run compile && npm run sass:dev && djinnjs -e dev && npm run cleanup",
         "production": "npm run cleanup && npm run compile && npm run sass:prod && djinnjs -e production && npm run cleanup",
         "preact": "webpack --config ./preact/webpack.config.js",
-        "preact:prod": "cross-env NODE_ENV=production webpack --config ./preact/webpack.config.js && node ./build-tools/preproduction.js"
+        "preact:prod": "cross-env NODE_ENV=production webpack --config ./preact/webpack.config.js && node ./build-tools/preproduction.js",
+        "deploy": "node ./build-tools/deploy.js"
     },
     "devDependencies": {
         "@fullhuman/postcss-purgecss": "^2.3.0",
@@ -18,6 +19,8 @@
         "css-loader": "^4.2.1",
         "cssmonster": "^0.2.1",
         "djinnjs": "^0.1.2",
+        "dotenv": "^8.2.0",
+        "gh-pages": "^3.1.0",
         "postcss-loader": "^3.0.0",
         "preact": "^10.4.7",
         "sass-loader": "^9.0.3",
