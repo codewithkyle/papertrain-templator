@@ -1,14 +1,13 @@
 const ghPages = require("gh-pages");
-require("dotenv").config({ path: "./" });
 
 ghPages.publish(
     "demo",
     {
         user: {
-            name: process.env.NAME,
-            email: process.env.EMAIL,
+            name: "Kyle Andrews",
+            email: "codingwithkyle@gmail.com",
         },
-        repo: "https://" + process.env.ACCESS_TOKEN + "@github.com/" + process.env.USERNAME + "/" + process.env.PROJECT + ".git",
+        repo: "https://" + process.env.ACCESS_TOKEN + "@github.com/codewithkyle/papertrain-templator.git",
         silent: false,
     },
     (error) => {

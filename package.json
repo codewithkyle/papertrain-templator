@@ -19,7 +19,6 @@
         "css-loader": "^4.2.1",
         "cssmonster": "^0.2.1",
         "djinnjs": "^0.1.2",
-        "dotenv": "^8.2.0",
         "gh-pages": "^3.1.0",
         "postcss-loader": "^3.0.0",
         "preact": "^10.4.7",
