@@ -38,6 +38,7 @@ type PageBuilderState = {
         over: boolean;
         handle: string;
         index: number;
+        scrollDirection;
     };
 };
 
@@ -61,6 +62,7 @@ class PageBuilder extends Component<{}, PageBuilderState> {
                 over: false,
                 handle: null,
                 index: null,
+                scrollDirection: 0,
             },
         };
     }
@@ -162,6 +164,7 @@ class PageBuilder extends Component<{}, PageBuilderState> {
                 over: false,
                 handle: null,
                 index: null,
+                scrollDirection: 0,
             },
         });
     };
@@ -243,6 +246,7 @@ class PageBuilder extends Component<{}, PageBuilderState> {
                 handle: null,
                 over: true,
                 index: index,
+                scrollDirection: 0,
             },
         });
     }
@@ -261,7 +265,31 @@ class PageBuilder extends Component<{}, PageBuilderState> {
         );
     };
 
-    componentWillMount() {
+    private scrollCallback() {
+        this.view.current.scrollBy({
+            top: this.state.drag.scrollDirection * 10,
+            left: 0,
+            behavior: "auto",
+        });
+
+        window.requestAnimationFrame(() => {
+            this.scrollCallback();
+        });
+    }
+
+    private startBodyDrag: EventListener = (e: MouseEvent) => {
+        let scrollDirection = e.clientY <= 100 ? -1 : 1;
+        const updatedState = { ...this.state };
+        updatedState.drag.scrollDirection = scrollDirection;
+        this.setState(updatedState);
+    };
+    private endBodyDrag: EventListener = (e: MouseEvent) => {
+        const updatedState = { ...this.state };
+        updatedState.drag.scrollDirection = 0;
+        this.setState(updatedState);
+    };
+
+    componentDidMount() {
         this.fetchBlocks();
         // Normalize
         const normalize = document.createElement("link");
@@ -280,6 +308,8 @@ class PageBuilder extends Component<{}, PageBuilderState> {
         buttons.href = `${location.origin}/assets/buttons.css`;
         buttons.rel = "stylesheet";
         document.head.appendChild(buttons);
+
+        this.scrollCallback();
     }
 
     render() {
@@ -301,13 +331,6 @@ class PageBuilder extends Component<{}, PageBuilderState> {
         let dropzone = null;
         if (this.state.view.length) {
             view = this.state.view.map((handle, index) => this.renderBlock(handle, index));
-            // if (this.state.drag.over) {
-            //     dropzone = (
-            //         <div className="drop-zone">
-            //             <p>Release the block to add it to the page.</p>
-            //         </div>
-            //     );
-            // }
         } else if (!this.state.drag.over) {
             view = <p className="block w-full text-center p-4 font-grey-700">Click and drag the block on the left to begin building a new page.</p>;
         } else {
@@ -340,6 +363,8 @@ class PageBuilder extends Component<{}, PageBuilderState> {
                         </div>
                     </div>
                 </main>
+                <div onDragEnter={this.startBodyDrag} onDragLeave={this.endBodyDrag} className="capture-scroll top"></div>
+                <div onDragEnter={this.startBodyDrag} onDragLeave={this.endBodyDrag} className="capture-scroll bottom"></div>
             </Fragment>
         );
     }
