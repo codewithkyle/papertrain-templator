@@ -25,6 +25,10 @@
         color: var(--grey-900);
     }
 
+    &:focus {
+        border-color: var(--grey-400);
+    }
+
     &.is-dragging {
         opacity: 0.3;
         box-shadow: none;

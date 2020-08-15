@@ -9,6 +9,8 @@ type BlockProps = {
     shiftBlocks: Function;
     startBlockShift: Function;
     shiftingBlock: number;
+    keyboardCallback: Function;
+    keyboardFocusedIndex: number;
 };
 
 type BlockState = {
@@ -91,18 +93,33 @@ export class Block extends Component<BlockProps, BlockState> {
         this.setState({ style: null });
     };
 
+    private handleMoveClick: EventListener = (e: Event) => {
+        if (e instanceof KeyboardEvent) {
+            this.props.keyboardCallback(this.props.index === this.props.keyboardFocusedIndex ? null : this.props.index);
+        }
+    };
+
     render() {
         return (
             <div
                 ref={this.block}
-                className={`pt-block ${this.state.style} ${this.state.dropPosition ? `drop-${this.state.dropPosition}` : ""}`}
+                className={`pt-block ${this.props.keyboardFocusedIndex === this.props.index ? "dragging" : ""} ${this.state.style} ${
+                    this.state.dropPosition ? `drop-${this.state.dropPosition}` : ""
+                }`}
                 onDragOver={this.dragOver}
                 onDrop={this.handleDrop}
                 onDragLeave={this.dragLeave}
                 data-index={this.props.index}
             >
                 <div className="pt-block-menu">
-                    <button aria-label="move block position" onDragStart={this.startDrag} onDragEnd={this.endDrag} className="pt-block-button -move" draggable={true}>
+                    <button
+                        aria-label="move block position"
+                        onDragStart={this.startDrag}
+                        onDragEnd={this.endDrag}
+                        className="pt-block-button -move"
+                        draggable={true}
+                        onKeyPress={this.handleMoveClick}
+                    >
                         <svg aria-hidden="true" focusable="false" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
                             <path
                                 fill="currentColor"

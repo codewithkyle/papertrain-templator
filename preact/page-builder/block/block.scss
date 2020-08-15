@@ -15,7 +15,6 @@
 
         .pt-block-menu {
             opacity: 1;
-            visibility: visible;
         }
     }
 
@@ -37,6 +36,10 @@
 
     &.dragging {
         opacity: 0.3;
+
+        .pt-block-menu {
+            opacity: 1;
+        }
     }
 
     &.dropzone {
@@ -68,7 +71,7 @@
         right: 1rem;
         border: 1px solid var(--grey-100);
         opacity: 0;
-        visibility: hidden;
+        visibility: visible;
         transition: all 150ms var(--ease-in-out);
 
         .pt-block-button {

@@ -40,6 +40,7 @@ type PageBuilderState = {
         index: number;
         scrollDirection;
     };
+    keyboardFocusedIndex: number;
 };
 
 const mountingPoint: HTMLElement = document.body.querySelector("#page-builder-mounting-point");
@@ -64,6 +65,7 @@ class PageBuilder extends Component<{}, PageBuilderState> {
                 index: null,
                 scrollDirection: 0,
             },
+            keyboardFocusedIndex: null,
         };
     }
 
@@ -220,7 +222,10 @@ class PageBuilder extends Component<{}, PageBuilderState> {
         if (indexToShift === null && this.state.drag.handle !== null) {
             this.loadBlock(this.state.drag.handle, targetIndex, direction);
             return;
+        } else if (targetIndex >= this.state.view.length || targetIndex < 0) {
+            return;
         }
+
         if (direction !== 0) {
             const updatedState = { ...this.state };
             const block = updatedState.view[indexToShift];
@@ -260,6 +265,10 @@ class PageBuilder extends Component<{}, PageBuilderState> {
         });
     }
 
+    private keyboardShift(index: number) {
+        this.setState({ keyboardFocusedIndex: index });
+    }
+
     private renderBlock = (handle: string, index: number) => {
         let html = this.state.blockData[handle].html;
         return (
@@ -270,6 +279,8 @@ class PageBuilder extends Component<{}, PageBuilderState> {
                 shiftBlocks={this.shiftBlocks.bind(this)}
                 shiftingBlock={this.state.drag.index}
                 startBlockShift={this.startBlockShift.bind(this)}
+                keyboardCallback={this.keyboardShift.bind(this)}
+                keyboardFocusedIndex={this.state.keyboardFocusedIndex}
             />
         );
     };
@@ -298,6 +309,37 @@ class PageBuilder extends Component<{}, PageBuilderState> {
         this.setState(updatedState);
     };
 
+    private keyboardShiftBlock(direction: number) {
+        const newIndex = this.state.keyboardFocusedIndex + direction;
+        if (newIndex < 0 || newIndex >= this.state.view.length) {
+            return;
+        }
+        console.log(this.state.keyboardFocusedIndex, newIndex, direction);
+
+        const updatedState = { ...this.state };
+        const block = updatedState.view[this.state.keyboardFocusedIndex];
+        updatedState.view.splice(this.state.keyboardFocusedIndex, 1);
+        updatedState.view.splice(newIndex, 0, block);
+        updatedState.keyboardFocusedIndex = newIndex;
+        this.setState(updatedState);
+    }
+
+    private handleKeyboardMove: EventListener = (e: Event) => {
+        if (e instanceof KeyboardEvent && this.state.keyboardFocusedIndex !== null) {
+            const key = e.key.toLowerCase();
+            switch (key) {
+                case "arrowup":
+                    this.keyboardShiftBlock(-1);
+                    break;
+                case "arrowdown":
+                    this.keyboardShiftBlock(1);
+                    break;
+                default:
+                    break;
+            }
+        }
+    };
+
     componentDidMount() {
         this.fetchBlocks();
         // Normalize
@@ -317,6 +359,8 @@ class PageBuilder extends Component<{}, PageBuilderState> {
         buttons.href = `${location.origin}/assets/buttons.css`;
         buttons.rel = "stylesheet";
         document.head.appendChild(buttons);
+
+        document.addEventListener("keyup", this.handleKeyboardMove);
 
         this.scrollCallback();
     }
