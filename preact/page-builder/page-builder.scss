@@ -1,29 +1,50 @@
 .page-builder {
     display: grid;
     grid-template-columns: 320px 1fr;
-    height: 100%;
+    height: calc(100% - 64px);
     width: 100%;
 
     aside {
         background-color: var(--white);
-        border-right: 1px solid var(--grey-200);
+        border-right: 1px solid var(--grey-300);
         padding: 2rem;
     }
 
     .view {
         display: block;
         width: 100%;
-        overflow-y: auto;
+        overflow-y: scroll;
         padding: 2rem 2rem 0;
 
         .page {
             width: 100%;
-            max-width: 1200px;
+            max-width: 1920px;
             background-color: var(--white);
-            border: 1px solid var(--grey-200);
+            border: 1px solid var(--grey-300);
             position: relative;
             display: block;
             margin: 0 auto;
+            transition: all 150ms var(--ease-in-out);
+
+            &.can-drop {
+                border-color: var(--primary-400);
+                box-shadow: 0 0 0 4px var(--primary-200);
+            }
+
+            .drop-zone {
+                display: block;
+                width: 100%;
+                padding: 2rem;
+
+                p {
+                    border: 1px dashed var(--primary-400);
+                    color: var(--primary-700);
+                    display: block;
+                    width: 100%;
+                    padding: 2rem;
+                    text-align: center;
+                }
+            }
         }
     }
 }

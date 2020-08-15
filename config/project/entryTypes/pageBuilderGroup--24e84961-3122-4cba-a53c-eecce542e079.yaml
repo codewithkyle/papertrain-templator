@@ -1,0 +1,40 @@
+fieldLayouts:
+  64d820b1-ac2a-4b3c-a9bb-5e2a1d668df2:
+    tabs:
+      -
+        elements:
+          -
+            autocapitalize: true
+            autocomplete: false
+            autocorrect: true
+            autofocus: false
+            class: null
+            disabled: false
+            id: null
+            instructions: ''
+            label: 'Group Name'
+            max: null
+            min: null
+            name: null
+            orientation: null
+            placeholder: null
+            readonly: false
+            requirable: false
+            required: false
+            size: null
+            step: null
+            tip: null
+            title: null
+            type: craft\fieldlayoutelements\EntryTitleField
+            warning: null
+            width: 100
+        name: Content
+        sortOrder: 1
+handle: pageBuilderGroup
+hasTitleField: true
+name: Group
+section: 869034cb-12c0-4a24-a727-39595d1337ab
+sortOrder: 2
+titleFormat: null
+titleTranslationKeyFormat: null
+titleTranslationMethod: site

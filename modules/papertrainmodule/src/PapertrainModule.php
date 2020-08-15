@@ -100,6 +100,12 @@ class PapertrainModule extends Module
                     'label' => 'Page Builder',
                     'icon' => '@modules/papertrainmodule/assets/img/page-builder-icon.svg',
                 ];
+                
+                // $event->navItems[] = [
+                //     'url' => 'papertrain/blocks/defaults',
+                //     'label' => 'Demo Blocks',
+                //     'icon' => '@modules/papertrainmodule/assets/img/default-blocks.svg',
+                // ];
             }
         );
 
@@ -109,7 +115,6 @@ class PapertrainModule extends Module
             function (RegisterUrlRulesEvent $event) {
                 // API
                 $event->rules['papertrain/api/render/<block:.*>'] = 'papertrain-module/default/render-block';
-                $event->rules['papertrain/api/load/<script:.*>'] = 'papertrain-module/default/load-asset';
                 $event->rules['papertrain/api/config.json'] = 'papertrain-module/default/load-config';
 
                 // Utility

@@ -56,6 +56,20 @@ fields:
                 -
                   - width
                   - ''
+          -
+            - f40d19b6-f536-4403-bf3c-c806bdf4b313
+            -
+              __assoc__:
+                -
+                  - width
+                  - ''
+          -
+            - bf783022-f6e2-46ba-be77-ba1f2a7b3d30
+            -
+              __assoc__:
+                -
+                  - width
+                  - ''
       contentTable: '{{%stc_4_slides}}'
       fieldLayout: row
       maxRows: '3'

@@ -30,47 +30,53 @@ class PapertrainModuleService extends Component
 
     public function getConfig()
     {
-        $path = FileHelper::normalizePath(Craft::$app->getPath()->getConfigPath() . '/papertrain/papertrain.json');
-        if (file_exists($path))
+        $entries = \craft\elements\Entry::find()
+                        ->section('demoBlocks')
+                        ->all();
+        $ret = [
+            'groups' => [],
+            'blocks' => [],
+        ];
+        foreach ($entries as $entry)
         {
-            return $path;
+            switch ($entry->type){
+                case "pageBuilderGroup":
+                    $ret['groups'][] = [
+                        'handle' => $entry->slug,
+                        'label' => $entry->title,
+                    ];
+                    break;
+                case "pageBuilderBlock":
+                    $ret['blocks'][] = [
+                        'handle' => $entry->slug,
+                        'label' => $entry->title,
+                        'group' => $entry->parent->slug ?? null,
+                    ];
+                    break;
+            }
         }
-        return null;
+        return $ret;
     }
 
     public function renderBlock(string $block)
     {
-        $model = include(FileHelper::normalizePath(Craft::$app->getPath()->getConfigPath() . '/papertrain/blocks/' . $block . '.php'));
-        if (!empty($model))
+        $html = '';
+        $entry = \craft\elements\Entry::find()
+                    ->section('demoBlocks')
+                    ->with(['pageBuilder'])
+                    ->slug($block)
+                    ->one();
+        if (!empty($entry))
         {
-            $view = Craft::$app->getView();
-            $view->setTemplateMode(View::TEMPLATE_MODE_SITE);
-
-            $data = [];
-            foreach ($model as $key => $value)
-            {
-                switch (gettype($value))
-                {
-                    case "string":
-                        $data[$key] = TemplateHelper::raw($value);    
-                        break;
-                    default:
-                        $data[$key] = $value;
-                        break;
-                }
-            }
-            
-            $html = $view->renderTemplate('_blocks/' . $block, [
-                'data' => $data,
+            $oldMode = Craft::$app->view->getTemplateMode();
+            Craft::$app->view->setTemplateMode(View::TEMPLATE_MODE_SITE);
+            $html = Craft::$app->view->renderTemplate('_blocks/' . $block, [
+                'data' => $entry['pageBuilder'][0],
                 'imageFormat' => 'webp',
             ]);
-
-            return TemplateHelper::raw($html);
+            Craft::$app->view->setTemplateMode($oldMode);
         }
-        else
-        {
-            return null;
-        }
+        return TemplateHelper::raw($html);
     }
 
     public function injectCriticalCSS($css)

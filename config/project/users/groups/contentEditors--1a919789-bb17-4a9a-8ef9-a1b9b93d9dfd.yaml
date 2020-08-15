@@ -1,0 +1,35 @@
+description: ''
+handle: contentEditors
+name: 'Content Editors'
+permissions:
+  - accesscp
+  - registerusers
+  - moderateusers
+  - assignuserpermissions
+  - assignusergroups
+  - administrateusers
+  - impersonateusers
+  - editusers
+  - deleteusers
+  - 'createentries:13f2f90d-2fe1-44a9-8924-36640c7fd42f'
+  - 'publishentries:13f2f90d-2fe1-44a9-8924-36640c7fd42f'
+  - 'deleteentries:13f2f90d-2fe1-44a9-8924-36640c7fd42f'
+  - 'publishpeerentries:13f2f90d-2fe1-44a9-8924-36640c7fd42f'
+  - 'deletepeerentries:13f2f90d-2fe1-44a9-8924-36640c7fd42f'
+  - 'editpeerentries:13f2f90d-2fe1-44a9-8924-36640c7fd42f'
+  - 'publishpeerentrydrafts:13f2f90d-2fe1-44a9-8924-36640c7fd42f'
+  - 'deletepeerentrydrafts:13f2f90d-2fe1-44a9-8924-36640c7fd42f'
+  - 'editpeerentrydrafts:13f2f90d-2fe1-44a9-8924-36640c7fd42f'
+  - 'editentries:13f2f90d-2fe1-44a9-8924-36640c7fd42f'
+  - 'saveassetinvolume:b66c5c16-25d6-4b13-8841-a66a20643329'
+  - 'createfoldersinvolume:b66c5c16-25d6-4b13-8841-a66a20643329'
+  - 'deletefilesandfoldersinvolume:b66c5c16-25d6-4b13-8841-a66a20643329'
+  - 'replacefilesinvolume:b66c5c16-25d6-4b13-8841-a66a20643329'
+  - 'editimagesinvolume:b66c5c16-25d6-4b13-8841-a66a20643329'
+  - 'editpeerfilesinvolume:b66c5c16-25d6-4b13-8841-a66a20643329'
+  - 'replacepeerfilesinvolume:b66c5c16-25d6-4b13-8841-a66a20643329'
+  - 'deletepeerfilesinvolume:b66c5c16-25d6-4b13-8841-a66a20643329'
+  - 'editpeerimagesinvolume:b66c5c16-25d6-4b13-8841-a66a20643329'
+  - 'viewpeerfilesinvolume:b66c5c16-25d6-4b13-8841-a66a20643329'
+  - 'viewvolume:b66c5c16-25d6-4b13-8841-a66a20643329'
+  - 'utility:clear-caches'

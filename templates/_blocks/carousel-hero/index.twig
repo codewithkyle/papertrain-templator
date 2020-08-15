@@ -1,4 +1,4 @@
-
+{% set slides = data.slides.all() %}
 <carousel-hero 
     style="display:block;width:100%;" 
     lazy-css="carousel-hero buttons" 
@@ -7,14 +7,14 @@
         data-automatic="true"
     {% endif %}
 >
-    {% for slide in data.slides %}
+    {% for slide in slides %}
         <carousel-slide class="{{ (loop.first) ? 'is-active' : '' }}">
             <img alt="{{ slide.backgroundImage[0].description }}" src="{{ slide.backgroundImage[0].url }}" width="1920" loading="lazy" style="opacity:0;transition:opacity 300ms ease-in-out;" onload="this.style.opacity = '1';">
             {% if slide.heading|length or slide.copy|length %}
                 <content-shim>
                     <div>
                         {% if slide.heading|length %}
-                            <h1 class="{{ slide.copy|length ? 'mb-0.5' }}">{{ slide.heading }}</h1>
+                            <h1 class="{{ slide.copy|length ? 'mb-1' }}">{{ slide.heading }}</h1>
                         {% endif %}
                         {% if slide.copy|length %}
                             <div class="{{ slide.callToAction.url|length or slide.secondaryAction.url|length ? 'mb-1.5' }}">
@@ -32,9 +32,9 @@
             {% endif %}
         </carousel-slide>
     {% endfor %}
-    {% if data.slides|length > 1 %}
-        <carousel-controls eager-css="carousel-hero-controls" style="opacity:0;visibility:hidden;transition:all 150ms ease-in-out;">
-            {% for slide in data.slides %}
+    {% if slides|length > 1 %}
+        <carousel-controls style="opacity:0;visibility:hidden;transition:all 150ms ease-in-out;">
+            {% for slide in slides %}
                 <button class="{{ loop.first ? 'is-active': '' }}" data-index="{{ loop.index0 }}" aria-label="switch to slide {{ loop.index }}"></button>
             {% endfor %}
         </carousel-controls>

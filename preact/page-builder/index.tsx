@@ -1,7 +1,5 @@
 import { h, render, Component, Fragment } from "preact";
 
-import "../normalize.css";
-import "../brixi.css";
 import "../base.scss";
 import "../buttons.scss";
 
@@ -10,6 +8,7 @@ import "./header.scss";
 import "./circle-rail-spinner.scss";
 
 import { TitleInput } from "./title-input";
+import { BlockButton } from "./block-button";
 
 type BlockGroup = {
     handle: string;
@@ -20,13 +19,9 @@ type Block = {
     handle: string;
     group: string;
     label: string;
-    css: boolean;
-    js: boolean;
 };
 
 type BlockData = {
-    js: string;
-    css: string;
     html: string;
 };
 
@@ -38,6 +33,10 @@ type PageBuilderState = {
         [key: string]: BlockData;
     };
     view: Array<string>;
+    drag: {
+        over: boolean;
+        handle: string;
+    };
 };
 
 const mountingPoint: HTMLElement = document.body.querySelector("#page-builder-mounting-point");
@@ -52,6 +51,10 @@ class PageBuilder extends Component<{}, PageBuilderState> {
             blocks: [],
             blockData: {},
             view: [],
+            drag: {
+                over: false,
+                handle: null,
+            },
         };
     }
 
@@ -71,57 +74,95 @@ class PageBuilder extends Component<{}, PageBuilderState> {
         if (request.ok) {
             const updatedState = { ...this.state };
             updatedState.groups = response.groups;
-            for (const key in response.blocks) {
-                const newBlock = {
-                    handle: key,
-                    group: response.blocks[key].group,
-                    label: response.blocks[key].label,
-                    css: response.blocks[key]?.css ?? true,
-                    js: response.blocks[key]?.js ?? false,
-                };
-                updatedState.blocks.push(newBlock);
-            }
+            updatedState.blocks = response.blocks;
             this.setState(updatedState);
         }
     }
 
     private async fetchBlock(handle: string) {
-        const request = await fetch(`${location.origin}/${mountingPoint.dataset.cpTrigger}/papertrain/api/render/${handle}`, {
+        let block: Block = null;
+        for (let i = 0; i < this.state.blocks.length; i++) {
+            if (this.state.blocks[i].handle === handle) {
+                block = this.state.blocks[i];
+                break;
+            }
+        }
+
+        // Load CSS
+        const stylesheet = document.createElement("link");
+        stylesheet.href = `${location.origin}/assets/${handle}.css`;
+        stylesheet.rel = "stylesheet";
+        document.head.appendChild(stylesheet);
+
+        // Load script
+        const script = document.createElement("script");
+        script.src = `${location.origin}/assets/${handle}.mjs`;
+        script.type = "module";
+        document.head.appendChild(script);
+
+        const htmlRequest = await fetch(`${location.origin}/${mountingPoint.dataset.cpTrigger}/papertrain/api/render/${handle}`, {
             method: "GET",
             credentials: "include",
-            headers: new Headers({
-                Accept: "text/html",
-            }),
         });
-        const response = await request.text();
-        if (request.ok) {
-            const updatedState = { ...this.state };
-            updatedState.blockData[handle] = {
-                html: response,
-                css: null,
-                js: null,
-            };
-            updatedState.view.push(handle);
-            this.setState(updatedState);
+
+        const htmlResponse = await htmlRequest.text();
+        const updatedState = { ...this.state };
+        updatedState.blockData[handle] = {
+            html: htmlResponse,
+        };
+        updatedState.view.push(handle);
+        this.setState(updatedState);
+    }
+
+    private loadBlock(handle: string) {
+        if (!this.state.blockData?.[handle]) {
+            this.fetchBlock(handle);
+        } else {
+            this.setState({ view: [...this.state.view, handle] });
         }
     }
 
-    private loadBlock: EventListener = (e: Event) => {
-        const target = e.currentTarget as HTMLElement;
-        if (!this.state.blockData?.[target.dataset.handle]) {
-            this.fetchBlock(target.dataset.handle);
-        } else {
-            this.setState({ view: [...this.state.view, target.dataset.handle] });
-        }
+    private dragOver: EventListener = (e: DragEvent) => {
+        e.stopImmediatePropagation();
+        e.preventDefault();
+        const updatedState = { ...this.state };
+        updatedState.drag.over = true;
+        this.setState(updatedState);
     };
+
+    private dragLeave: EventListener = (e: DragEvent) => {
+        e.stopImmediatePropagation();
+        e.preventDefault();
+        const updatedState = { ...this.state };
+        updatedState.drag.over = false;
+        this.setState(updatedState);
+    };
+
+    private handleDrop: EventListener = (e: DragEvent) => {
+        e.stopImmediatePropagation();
+        e.preventDefault();
+        this.loadBlock(this.state.drag.handle);
+        this.setState({
+            drag: {
+                over: false,
+                handle: null,
+            },
+        });
+    };
+
+    private handleReset: EventListener = () => {
+        this.setState({ view: [] });
+    };
+
+    private setDragHandle(handle: string) {
+        const updatedState = { ...this.state };
+        updatedState.drag.handle = handle;
+        this.setState(updatedState);
+    }
 
     private renderBlockButton = (block: Block, group: string) => {
         if (block.group === group) {
-            return (
-                <button onClick={this.loadBlock} data-handle={block.handle} className="block font-grey-700 font-sm mb-1">
-                    {block.label}
-                </button>
-            );
+            return <BlockButton label={block.label} handle={block.handle} callback={this.setDragHandle.bind(this)} addBlockCallback={this.loadBlock.bind(this)} />;
         }
     };
 
@@ -136,11 +177,23 @@ class PageBuilder extends Component<{}, PageBuilderState> {
     };
 
     private renderBlock = (handle: string) => {
-        return <div style={{ display: "block", position: "relative", width: "100%" }} dangerouslySetInnerHTML={{ __html: this.state.blockData[handle].html }}></div>;
+        let html = this.state.blockData[handle].html;
+        return <div style={{ display: "block", position: "relative", width: "100%" }} dangerouslySetInnerHTML={{ __html: html }}></div>;
     };
 
     componentWillMount() {
         this.fetchBlocks();
+        // Normalize
+        const normalize = document.createElement("link");
+        normalize.href = `${location.origin}/assets/normalize.css`;
+        normalize.rel = "stylesheet";
+        document.head.appendChild(normalize);
+
+        // Brixi
+        const brixi = document.createElement("link");
+        brixi.href = `${location.origin}/assets/brixi.css`;
+        brixi.rel = "stylesheet";
+        document.head.appendChild(brixi);
     }
 
     render() {
@@ -157,12 +210,32 @@ class PageBuilder extends Component<{}, PageBuilderState> {
                 </div>
             );
         }
+
+        let view: any = null;
+        if (this.state.view.length) {
+            view = this.state.view.map((handle) => this.renderBlock(handle));
+        } else if (!this.state.drag.over) {
+            view = <p className="block w-full text-center p-4 font-grey-700">Click and drag the block on the left to begin building a new page.</p>;
+        }
+
+        let dropZone = null;
+        if (this.state.drag.over) {
+            dropZone = (
+                <div className="drop-zone">
+                    <p>Release the block to add it to the page.</p>
+                </div>
+            );
+        }
+
         return (
             <Fragment>
                 <header>
                     <TitleInput value={this.state.title} callback={this.updateTitle.bind(this)} />
                     <div>
-                        <button onClick={null} className="button -solid -primary">
+                        <button onClick={this.handleReset} className="pt-bttn -danger -text mr-1">
+                            Reset Page
+                        </button>
+                        <button onClick={null} className="pt-bttn -solid -primary">
                             Create Page
                         </button>
                     </div>
@@ -170,7 +243,10 @@ class PageBuilder extends Component<{}, PageBuilderState> {
                 <main className="page-builder">
                     <aside>{aside}</aside>
                     <div className="view">
-                        <div className="page">{this.state.view.map((handle) => this.renderBlock(handle))}</div>
+                        <div className={`page ${this.state.drag.over ? "can-drop" : ""}`} onDragOver={this.dragOver} onDragLeave={this.dragLeave} onDrop={this.handleDrop}>
+                            {view}
+                            {dropZone}
+                        </div>
                     </div>
                 </main>
             </Fragment>

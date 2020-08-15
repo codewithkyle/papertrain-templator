@@ -1,0 +1,27 @@
+.button-block {
+    padding: 0 0.5rem;
+    border-radius: 0.25rem;
+    min-height: 36px;
+    display: flex;
+    width: 100%;
+    flex-flow: row nowrap;
+    align-items: center;
+    cursor: move;
+    transition: all 150ms var(--ease-in-out);
+    background-color: var(--white);
+    color: var(--grey-700);
+    font-size: var(--font-sm);
+    margin-bottom: 0.5rem;
+    border: 1px solid var(--grey-200);
+
+    &:hover,
+    &:focus {
+        box-shadow: var(--shadow-md);
+        color: var(--grey-800);
+    }
+
+    &.is-dragging {
+        opacity: 0.3;
+        box-shadow: none;
+    }
+}

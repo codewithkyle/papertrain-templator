@@ -41,19 +41,6 @@ class DefaultController extends Controller
         return PapertrainModule::getInstance()->papertrainModuleService->renderBlock($block);
     }
 
-    public function actionLoadAsset(string $file)
-    {
-        $path = $_SERVER['DOCUMENT_ROOT'] . '/assets/' . $file;
-        if (file_exists($path))
-        {
-            return Craft::$app->response->sendFile($path, $file);
-        }
-        else
-        {
-            return Craft::$app->getResponse()->setStatusCode(404);
-        }
-    }
-
     public function actionLoadCoreScript(string $script)
     {
         $filePath = dirname(__DIR__);
@@ -72,7 +59,7 @@ class DefaultController extends Controller
     public function actionLoadConfig()
     {
         $this->requireAcceptsJson();
-        $path = PapertrainModule::getInstance()->papertrainModuleService->getConfig();
-        return Craft::$app->response->sendFile($path, 'config.json');
+        $config = PapertrainModule::getInstance()->papertrainModuleService->getConfig();
+        return $this->asJson($config);
     }
 }

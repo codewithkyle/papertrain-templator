@@ -1,0 +1,26 @@
+enableVersioning: false
+handle: demoBlocks
+name: 'Demo Blocks'
+previewTargets:
+  -
+    __assoc__:
+      -
+        - label
+        - 'Primary entry page'
+      -
+        - urlFormat
+        - '{url}'
+      -
+        - refresh
+        - '1'
+propagationMethod: all
+siteSettings:
+  dd11e4b2-5f12-4670-aeaa-22b78757e69b:
+    enabledByDefault: true
+    hasUrls: false
+    template: null
+    uriFormat: null
+structure:
+  maxLevels: 2
+  uid: 1e2921a4-9720-4efa-8677-b88bb59db364
+type: structure
