@@ -69,9 +69,7 @@ class PageBuilder extends Component<{}, PageBuilderState> {
         };
     }
 
-    private updateTitle(title: string) {
-        this.setState({ title: title });
-    }
+    // Functions =========================================================================================================
 
     private async fetchBlocks() {
         const request = await fetch(`${location.origin}/${mountingPoint.dataset.cpTrigger}/papertrain/api/config.json`, {
@@ -152,60 +150,20 @@ class PageBuilder extends Component<{}, PageBuilderState> {
         }, 150);
     }
 
-    private dragOver: EventListener = (e: DragEvent) => {
-        e.preventDefault();
-        const updatedState = { ...this.state };
-        updatedState.drag.over = true;
-        this.setState(updatedState);
-    };
-
-    private dragLeave: EventListener = (e: DragEvent) => {
-        e.preventDefault();
-        const updatedState = { ...this.state };
-        updatedState.drag.over = false;
-        this.setState(updatedState);
-    };
-
-    private handleDrop: EventListener = (e: DragEvent) => {
-        e.preventDefault();
-        if (this.state.drag.handle && !this.state.view.length) {
-            this.loadBlock(this.state.drag.handle);
-        }
+    private startBlockShift(index: number) {
         this.setState({
             drag: {
-                over: false,
                 handle: null,
-                index: null,
+                over: true,
+                index: index,
                 scrollDirection: 0,
             },
         });
-    };
-
-    private handleReset: EventListener = () => {
-        this.setState({ view: [] });
-    };
-
-    private setDragHandle(handle: string) {
-        const updatedState = { ...this.state };
-        updatedState.drag.handle = handle;
-        this.setState(updatedState);
     }
 
-    private renderBlockButton = (block: IBlock, group: string) => {
-        if (block.group === group) {
-            return <BlockButton label={block.label} handle={block.handle} callback={this.setDragHandle.bind(this)} addBlockCallback={this.loadBlock.bind(this)} />;
-        }
-    };
-
-    private renderGroup = (group: BlockGroup) => {
-        let blocks = this.state.blocks.map((block) => this.renderBlockButton(block, group.handle));
-        return (
-            <div className="block w-full mb-4">
-                <h3 className="block w-full mb-1 font-grey-800 font-medium cursor-default text-uppercase">{group.label}</h3>
-                {blocks}
-            </div>
-        );
-    };
+    private updateTitle(title: string) {
+        this.setState({ title: title });
+    }
 
     private removeBlock(index: number) {
         const updatedState = { ...this.state };
@@ -254,20 +212,124 @@ class PageBuilder extends Component<{}, PageBuilderState> {
         }, 150);
     }
 
-    private startBlockShift(index: number) {
-        this.setState({
-            drag: {
-                handle: null,
-                over: true,
-                index: index,
-                scrollDirection: 0,
-            },
-        });
-    }
-
     private keyboardShift(index: number) {
         this.setState({ keyboardFocusedIndex: index });
     }
+
+    private scrollCallback() {
+        this.view.current.scrollBy({
+            top: this.state.drag.scrollDirection * 10,
+            left: 0,
+            behavior: "auto",
+        });
+
+        window.requestAnimationFrame(() => {
+            this.scrollCallback();
+        });
+    }
+
+    private keyboardShiftBlock(direction: number) {
+        const newIndex = this.state.keyboardFocusedIndex + direction;
+        if (newIndex < 0 || newIndex >= this.state.view.length) {
+            return;
+        }
+        console.log(this.state.keyboardFocusedIndex, newIndex, direction);
+
+        const updatedState = { ...this.state };
+        const block = updatedState.view[this.state.keyboardFocusedIndex];
+        updatedState.view.splice(this.state.keyboardFocusedIndex, 1);
+        updatedState.view.splice(newIndex, 0, block);
+        updatedState.keyboardFocusedIndex = newIndex;
+        this.setState(updatedState);
+    }
+
+    private setDragHandle(handle: string) {
+        const updatedState = { ...this.state };
+        updatedState.drag.handle = handle;
+        this.setState(updatedState);
+    }
+
+    // Event Listeners =========================================================================================================
+
+    private dragOver: EventListener = (e: DragEvent) => {
+        e.preventDefault();
+        const updatedState = { ...this.state };
+        updatedState.drag.over = true;
+        this.setState(updatedState);
+    };
+
+    private dragLeave: EventListener = (e: DragEvent) => {
+        e.preventDefault();
+        const updatedState = { ...this.state };
+        updatedState.drag.over = false;
+        this.setState(updatedState);
+    };
+
+    private handleDrop: EventListener = (e: DragEvent) => {
+        e.preventDefault();
+        if (this.state.drag.handle && !this.state.view.length) {
+            this.loadBlock(this.state.drag.handle);
+        }
+        this.setState({
+            drag: {
+                over: false,
+                handle: null,
+                index: null,
+                scrollDirection: 0,
+            },
+        });
+    };
+
+    private handleReset: EventListener = () => {
+        this.setState({ view: [] });
+    };
+
+    private startBodyDrag: EventListener = (e: MouseEvent) => {
+        let scrollDirection = e.clientY <= 100 ? -1 : 1;
+        const updatedState = { ...this.state };
+        updatedState.drag.scrollDirection = scrollDirection;
+        this.setState(updatedState);
+    };
+
+    private endBodyDrag: EventListener = (e: MouseEvent) => {
+        const updatedState = { ...this.state };
+        updatedState.drag.scrollDirection = 0;
+        this.setState(updatedState);
+    };
+
+    private handleKeyboardMove: EventListener = (e: Event) => {
+        if (e instanceof KeyboardEvent && this.state.keyboardFocusedIndex !== null) {
+            const key = e.key.toLowerCase();
+            switch (key) {
+                case "arrowup":
+                    this.keyboardShiftBlock(-1);
+                    break;
+                case "arrowdown":
+                    this.keyboardShiftBlock(1);
+                    break;
+                default:
+                    break;
+            }
+        }
+    };
+
+    // Render Functions =========================================================================================================
+
+    private renderBlockButton = (block: IBlock, group: string) => {
+        if (block.group === group) {
+            return <BlockButton label={block.label} handle={block.handle} callback={this.setDragHandle.bind(this)} addBlockCallback={this.loadBlock.bind(this)} />;
+        }
+    };
+
+    private renderGroup = (group: BlockGroup) => {
+        let blocks = this.state.blocks.map((block) => this.renderBlockButton(block, group.handle));
+        return (
+            <div className="block w-full mb-4">
+                <h3 className="block w-full mb-1 font-grey-800 font-medium cursor-default text-uppercase">{group.label}</h3>
+                {blocks}
+            </div>
+        );
+    };
 
     private renderBlock = (handle: string, index: number) => {
         let html = this.state.blockData[handle].html;
@@ -301,60 +363,7 @@ class PageBuilder extends Component<{}, PageBuilderState> {
         );
     };
 
-    private scrollCallback() {
-        this.view.current.scrollBy({
-            top: this.state.drag.scrollDirection * 10,
-            left: 0,
-            behavior: "auto",
-        });
-
-        window.requestAnimationFrame(() => {
-            this.scrollCallback();
-        });
-    }
-
-    private startBodyDrag: EventListener = (e: MouseEvent) => {
-        let scrollDirection = e.clientY <= 100 ? -1 : 1;
-        const updatedState = { ...this.state };
-        updatedState.drag.scrollDirection = scrollDirection;
-        this.setState(updatedState);
-    };
-    private endBodyDrag: EventListener = (e: MouseEvent) => {
-        const updatedState = { ...this.state };
-        updatedState.drag.scrollDirection = 0;
-        this.setState(updatedState);
-    };
-
-    private keyboardShiftBlock(direction: number) {
-        const newIndex = this.state.keyboardFocusedIndex + direction;
-        if (newIndex < 0 || newIndex >= this.state.view.length) {
-            return;
-        }
-        console.log(this.state.keyboardFocusedIndex, newIndex, direction);
-
-        const updatedState = { ...this.state };
-        const block = updatedState.view[this.state.keyboardFocusedIndex];
-        updatedState.view.splice(this.state.keyboardFocusedIndex, 1);
-        updatedState.view.splice(newIndex, 0, block);
-        updatedState.keyboardFocusedIndex = newIndex;
-        this.setState(updatedState);
-    }
-
-    private handleKeyboardMove: EventListener = (e: Event) => {
-        if (e instanceof KeyboardEvent && this.state.keyboardFocusedIndex !== null) {
-            const key = e.key.toLowerCase();
-            switch (key) {
-                case "arrowup":
-                    this.keyboardShiftBlock(-1);
-                    break;
-                case "arrowdown":
-                    this.keyboardShiftBlock(1);
-                    break;
-                default:
-                    break;
-            }
-        }
-    };
+    // Preact Functions =========================================================================================================
 
     componentDidMount() {
         this.fetchBlocks();

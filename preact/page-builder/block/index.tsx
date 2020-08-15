@@ -32,6 +32,18 @@ export class Block extends Component<BlockProps, BlockState> {
         this.block = createRef();
     }
 
+    // Functions =========================================================================================================
+
+    private hitDetect(mousePos: { x: number; y: number }, block: { x: number; y: number; height: number }): number {
+        const halfway = block.y + block.height / 2;
+        if (mousePos.y >= halfway) {
+            return 1;
+        }
+        return -1;
+    }
+
+    // Event Listeners =========================================================================================================
+
     private removeBlock: EventListener = () => {
         this.props.removeCallback(this.props.index);
     };
@@ -65,14 +77,6 @@ export class Block extends Component<BlockProps, BlockState> {
         }
     };
 
-    private hitDetect(mousePos: { x: number; y: number }, block: { x: number; y: number; height: number }): number {
-        const halfway = block.y + block.height / 2;
-        if (mousePos.y >= halfway) {
-            return 1;
-        }
-        return -1;
-    }
-
     private handleDrop: EventListener = (e: DragEvent) => {
         e.preventDefault();
         if (this.props.shiftingBlock !== this.props.index) {
@@ -100,6 +104,8 @@ export class Block extends Component<BlockProps, BlockState> {
             this.props.keyboardCallback(this.props.index === this.props.keyboardFocusedIndex ? null : this.props.index);
         }
     };
+
+    // Preact Functions =========================================================================================================
 
     render() {
         return (

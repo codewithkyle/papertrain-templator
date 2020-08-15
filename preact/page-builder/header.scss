@@ -9,4 +9,5 @@ header {
     padding: 0 2rem;
     background-color: $white;
     border-bottom: 1px solid $grey-300;
+    user-select: none;
 }
