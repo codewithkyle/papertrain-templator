@@ -1,0 +1,13 @@
+{
+    "groups": [
+        { "handle": "heros", "label": "Hero Blocks" },
+        { "handle": "utilities", "label": "Utilities" },
+        { "handle": "content", "label": "Content Blocks" }
+    ],
+    "blocks": [
+        { "handle": "carousel-hero", "label": "Carousel Hero", "group": "heros" },
+        { "handle": "homepage-hero", "label": "Homepage Hero", "group": "heros" },
+        { "handle": "spacer-block", "label": "Spacer", "group": "utilities" },
+        { "handle": "rich-text", "label": "Rich Text", "group": "content" }
+    ]
+}

@@ -1,0 +1,226 @@
+carousel-hero {
+  display: inline-block;
+  position: relative;
+  min-height: 550px;
+  max-height: 80vh;
+  background-color: var(--black);
+}
+
+carousel-hero::before {
+  content: "";
+  display: block;
+  width: 100%;
+  padding-top: 56.25%;
+  box-sizing: border-box;
+}
+
+carousel-hero carousel-timer {
+  display: inline-block;
+  width: 100%;
+  height: 0.5rem;
+  background-color: rgba(51, 51, 51, 0.6);
+  transform-origin: left center;
+  transform: scaleX(0);
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  z-index: 10;
+}
+
+carousel-hero carousel-slide {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-flow: column wrap;
+  opacity: 0;
+  visibility: hidden;
+  z-index: 1;
+  transition: all 600ms ease-in-out;
+  padding: 1rem;
+}
+
+carousel-hero carousel-slide::before {
+  content: "";
+  display: inline-block;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color: rgba(51, 51, 51, 0.6);
+  user-select: none;
+  pointer-events: none;
+  z-index: 2;
+}
+
+carousel-hero carousel-slide.is-active {
+  opacity: 1;
+  visibility: visible;
+  z-index: 5;
+}
+
+carousel-hero carousel-slide.is-active h1,
+carousel-hero carousel-slide.is-active p,
+carousel-hero carousel-slide.is-active a {
+  animation: fadeInUp 900ms forwards cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+carousel-hero carousel-slide content-shim {
+  width: 1100px;
+  max-width: 100%;
+  display: block;
+  margin: 0 auto;
+}
+
+carousel-hero carousel-slide img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  user-select: none;
+  z-index: 1;
+}
+
+carousel-hero carousel-slide div {
+  z-index: 3;
+  display: block;
+  width: 100%;
+}
+
+carousel-hero carousel-slide h1 {
+  color: var(--white);
+  font-size: 3rem;
+  line-height: 1.25;
+  display: block;
+  width: 100%;
+  font-weight: var(--font-bold);
+  animation-delay: 75ms !important;
+  opacity: 0;
+  transform: translateY(4rem);
+  text-shadow: 0 1px 3px rgba(255, 255, 255, 0.15);
+}
+
+@media (min-width: 768px) {
+  carousel-hero carousel-slide h1 {
+    font-size: 5rem;
+  }
+}
+
+carousel-hero carousel-slide p {
+  color: var(--white);
+  margin-bottom: 1rem;
+  display: block;
+  width: 100%;
+  line-height: 1.618;
+  animation-delay: 125ms !important;
+  opacity: 0;
+  text-shadow: 0 1px 3px rgba(255, 255, 255, 0.15);
+  transform: translateY(4rem);
+}
+
+carousel-hero carousel-slide p:last-of-type {
+  margin-bottom: 0;
+}
+
+@media (min-width: 768px) {
+  carousel-hero carousel-slide p {
+    line-height: 2rem;
+    font-size: var(--font-lg);
+  }
+}
+
+carousel-hero carousel-slide a {
+  animation-delay: 200ms !important;
+  opacity: 0;
+  transform: translateY(4rem);
+}
+
+carousel-controls {
+  position: absolute;
+  bottom: 1rem;
+  left: 0;
+  width: 100%;
+  display: inline-block;
+  text-align: center;
+  z-index: 10;
+}
+
+carousel-controls button {
+  width: 38px;
+  height: 38px;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  flex-flow: column wrap;
+  position: relative;
+}
+
+carousel-controls button::after {
+  content: "";
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(255, 255, 255, 0);
+  background-color: transparent;
+  border-radius: 50%;
+  display: inline-block;
+  transition: all 75ms ease-in-out;
+  position: absolute;
+}
+
+carousel-controls button::before {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.3);
+  content: "";
+  display: inline-block;
+  transition: all 75ms ease-in-out;
+  box-sizing: border-box;
+  position: absolute;
+  transform: scale(1);
+}
+
+carousel-controls button:hover::before, carousel-controls button:focus::before {
+  transform: scale(0.6);
+  background-color: rgba(255, 255, 255, 0.87);
+}
+
+carousel-controls button:hover::after, carousel-controls button:focus::after {
+  border-color: rgba(255, 255, 255, 0.87);
+}
+
+carousel-controls button:active::before {
+  transform: scale(0.6);
+  background-color: white;
+}
+
+carousel-controls button:active::after {
+  border-color: white;
+}
+
+carousel-controls button.is-active::before {
+  transform: scale(0.6);
+  background-color: white;
+}
+
+carousel-controls button.is-active::after {
+  border-color: white;
+}
+
+@keyframes fadeInUp {
+  from {
+    transform: translateY(4rem);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
