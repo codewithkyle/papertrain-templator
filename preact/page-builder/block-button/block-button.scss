@@ -14,10 +14,15 @@
     margin-bottom: 0.5rem;
     border: 1px solid var(--grey-200);
 
-    &:hover,
-    &:focus {
+    &:hover {
         box-shadow: var(--shadow-md);
         color: var(--grey-800);
+    }
+
+    &:active {
+        box-shadow: none;
+        background-color: var(--grey-100);
+        color: var(--grey-900);
     }
 
     &.is-dragging {

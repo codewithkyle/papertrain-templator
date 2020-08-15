@@ -1,4 +1,4 @@
-import { h, render, Component, Fragment } from "preact";
+import { h, render, Component, Fragment, createRef } from "preact";
 
 import "../base.scss";
 import "../buttons.scss";
@@ -37,14 +37,19 @@ type PageBuilderState = {
     drag: {
         over: boolean;
         handle: string;
+        index: number;
     };
 };
 
 const mountingPoint: HTMLElement = document.body.querySelector("#page-builder-mounting-point");
 
 class PageBuilder extends Component<{}, PageBuilderState> {
+    private view: any;
+
     constructor() {
         super();
+
+        this.view = createRef();
 
         this.state = {
             title: "Untitled page",
@@ -55,6 +60,7 @@ class PageBuilder extends Component<{}, PageBuilderState> {
             drag: {
                 over: false,
                 handle: null,
+                index: null,
             },
         };
     }
@@ -81,14 +87,6 @@ class PageBuilder extends Component<{}, PageBuilderState> {
     }
 
     private async fetchBlock(handle: string) {
-        let block: IBlock = null;
-        for (let i = 0; i < this.state.blocks.length; i++) {
-            if (this.state.blocks[i].handle === handle) {
-                block = this.state.blocks[i];
-                break;
-            }
-        }
-
         // Load CSS
         const stylesheet = document.createElement("link");
         stylesheet.href = `${location.origin}/assets/${handle}.css`;
@@ -113,6 +111,14 @@ class PageBuilder extends Component<{}, PageBuilderState> {
         };
         updatedState.view.push(handle);
         this.setState(updatedState);
+
+        setTimeout(() => {
+            this.view.current.scrollTo({
+                top: this.view.current.scrollHeight,
+                left: 0,
+                behavior: "smooth",
+            });
+        }, 150);
     }
 
     private loadBlock(handle: string) {
@@ -120,11 +126,17 @@ class PageBuilder extends Component<{}, PageBuilderState> {
             this.fetchBlock(handle);
         } else {
             this.setState({ view: [...this.state.view, handle] });
+            setTimeout(() => {
+                this.view.current.scrollTo({
+                    top: this.view.current.scrollHeight,
+                    left: 0,
+                    behavior: "smooth",
+                });
+            }, 150);
         }
     }
 
     private dragOver: EventListener = (e: DragEvent) => {
-        e.stopImmediatePropagation();
         e.preventDefault();
         const updatedState = { ...this.state };
         updatedState.drag.over = true;
@@ -132,7 +144,6 @@ class PageBuilder extends Component<{}, PageBuilderState> {
     };
 
     private dragLeave: EventListener = (e: DragEvent) => {
-        e.stopImmediatePropagation();
         e.preventDefault();
         const updatedState = { ...this.state };
         updatedState.drag.over = false;
@@ -140,13 +151,15 @@ class PageBuilder extends Component<{}, PageBuilderState> {
     };
 
     private handleDrop: EventListener = (e: DragEvent) => {
-        e.stopImmediatePropagation();
         e.preventDefault();
-        this.loadBlock(this.state.drag.handle);
+        if (this.state.drag.handle) {
+            this.loadBlock(this.state.drag.handle);
+        }
         this.setState({
             drag: {
                 over: false,
                 handle: null,
+                index: null,
             },
         });
     };
@@ -178,14 +191,41 @@ class PageBuilder extends Component<{}, PageBuilderState> {
     };
 
     private removeBlock(index: number) {
-        const updatedStata = { ...this.state };
-        updatedStata.view.splice(index, 1);
-        this.setState(updatedStata);
+        const updatedState = { ...this.state };
+        updatedState.view.splice(index, 1);
+        this.setState(updatedState);
+    }
+
+    private shiftBlocks(indexToShift: number, targetIndex: number) {
+        const updatedState = { ...this.state };
+        const block = updatedState.view[indexToShift];
+        updatedState.view.splice(indexToShift, 1);
+        updatedState.view.splice(targetIndex, 0, block);
+        this.setState(updatedState);
+    }
+
+    private startBlockShift(index: number) {
+        this.setState({
+            drag: {
+                handle: null,
+                over: true,
+                index: index,
+            },
+        });
     }
 
     private renderBlock = (handle: string, index: number) => {
         let html = this.state.blockData[handle].html;
-        return <Block index={index} html={html} removeCallback={this.removeBlock.bind(this)} />;
+        return (
+            <Block
+                index={index}
+                html={html}
+                removeCallback={this.removeBlock.bind(this)}
+                shiftBlocks={this.shiftBlocks.bind(this)}
+                shiftingBlock={this.state.drag.index}
+                startBlockShift={this.startBlockShift.bind(this)}
+            />
+        );
     };
 
     componentWillMount() {
@@ -228,13 +268,13 @@ class PageBuilder extends Component<{}, PageBuilderState> {
         let dropzone = null;
         if (this.state.view.length) {
             view = this.state.view.map((handle, index) => this.renderBlock(handle, index));
-            if (this.state.drag.over) {
-                dropzone = (
-                    <div className="drop-zone">
-                        <p>Release the block to add it to the page.</p>
-                    </div>
-                );
-            }
+            // if (this.state.drag.over) {
+            //     dropzone = (
+            //         <div className="drop-zone">
+            //             <p>Release the block to add it to the page.</p>
+            //         </div>
+            //     );
+            // }
         } else if (!this.state.drag.over) {
             view = <p className="block w-full text-center p-4 font-grey-700">Click and drag the block on the left to begin building a new page.</p>;
         } else {
@@ -260,7 +300,7 @@ class PageBuilder extends Component<{}, PageBuilderState> {
                 </header>
                 <main className="page-builder">
                     <aside>{aside}</aside>
-                    <div className="view">
+                    <div className="view" ref={this.view}>
                         <div className={`page ${this.state.drag.over ? "can-drop" : ""}`} onDragOver={this.dragOver} onDragLeave={this.dragLeave} onDrop={this.handleDrop}>
                             {view}
                             {dropzone}

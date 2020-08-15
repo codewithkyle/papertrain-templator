@@ -1,7 +1,7 @@
 {
     "compilerOptions": {
         "allowJs": true,
-        "checkJs": true,
+        "checkJs": false,
         "target": "ES2019",
         "module": "ESNext",
         "lib": ["DOM", "ES2019"],

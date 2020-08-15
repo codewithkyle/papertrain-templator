@@ -5,9 +5,28 @@
 
     &:hover,
     &:focus-within {
+        z-index: 999;
+        box-shadow: 0 0 0 2px var(--primary-400);
+
         .pt-block-menu {
             opacity: 1;
             visibility: visible;
+        }
+    }
+
+    &.can-drop {
+        &::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--primary-500);
+            opacity: 0.3;
+            z-index: 999;
+            pointer-events: none;
+            user-select: none;
         }
     }
 
@@ -24,7 +43,6 @@
         opacity: 0;
         visibility: hidden;
         transition: all 150ms var(--ease-in-out);
-        padding: 0 0.125rem;
 
         .pt-block-button {
             width: 36px;
@@ -43,11 +61,7 @@
             }
 
             &.-move {
-                cursor: grab;
-
-                &:active {
-                    cursor: grabbing;
-                }
+                cursor: move;
             }
 
             &:hover,
@@ -70,8 +84,8 @@
             &::before {
                 content: "";
                 background-color: var(--grey-900);
-                width: calc(100% - 4px);
-                height: calc(100% - 4px);
+                width: calc(100% - 6px);
+                height: calc(100% - 6px);
                 border-radius: 50%;
                 position: absolute;
                 opacity: 0;
