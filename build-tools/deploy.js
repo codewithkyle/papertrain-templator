@@ -1,5 +1,5 @@
 const ghPages = require("gh-pages");
-require("dotenv").config({ path: "./.env" });
+require("dotenv").config({ path: "./" });
 
 ghPages.publish(
     "demo",
