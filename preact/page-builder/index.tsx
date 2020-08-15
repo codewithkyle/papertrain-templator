@@ -118,7 +118,6 @@ class PageBuilder extends Component<{}, PageBuilderState> {
             };
             if (targetIndex !== null && direction !== null) {
                 if (direction === -1) {
-                    console.log(updatedState.view);
                     updatedState.view.splice(targetIndex, 0, handle);
                 } else {
                     updatedState.view.splice(targetIndex + 1, 0, handle);
@@ -128,7 +127,17 @@ class PageBuilder extends Component<{}, PageBuilderState> {
             }
             this.setState(updatedState);
         } else {
-            this.setState({ view: [...this.state.view, handle] });
+            const updatedState = { ...this.state };
+            if (targetIndex !== null && direction !== null) {
+                if (direction === -1) {
+                    updatedState.view.splice(targetIndex, 0, handle);
+                } else {
+                    updatedState.view.splice(targetIndex + 1, 0, handle);
+                }
+            } else {
+                updatedState.view.push(handle);
+            }
+            this.setState(updatedState);
         }
 
         setTimeout(() => {
@@ -207,8 +216,7 @@ class PageBuilder extends Component<{}, PageBuilderState> {
     }
 
     private shiftBlocks(indexToShift: number, targetIndex: number, direction: number) {
-        if (indexToShift === null && this.state.drag.handle) {
-            console.log(`drop new block ${direction === -1 ? "above" : "below"} ${targetIndex}`);
+        if (indexToShift === null && this.state.drag.handle !== null) {
             this.loadBlock(this.state.drag.handle, targetIndex, direction);
             return;
         }
