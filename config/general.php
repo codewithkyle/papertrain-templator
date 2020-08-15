@@ -30,6 +30,7 @@ return [
         'allowUpdates'          => true,
         'enableTemplateCaching' => false,
         'testToEmailAddress'    => getenv('DEV_EMAIL_ADDRESS'),
+        'enableCsrfProtection'  => false,
         'aliases' => [
             '@rootUrl' => getenv('DEV_URL'),
         ],

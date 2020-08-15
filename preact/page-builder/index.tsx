@@ -41,6 +41,7 @@ type PageBuilderState = {
         scrollDirection;
     };
     keyboardFocusedIndex: number;
+    submitting: boolean;
 };
 
 const mountingPoint: HTMLElement = document.body.querySelector("#page-builder-mounting-point");
@@ -66,6 +67,7 @@ class PageBuilder extends Component<{}, PageBuilderState> {
                 scrollDirection: 0,
             },
             keyboardFocusedIndex: null,
+            submitting: false,
         };
     }
 
@@ -313,6 +315,49 @@ class PageBuilder extends Component<{}, PageBuilderState> {
         }
     };
 
+    private createPage: EventListener = async () => {
+        this.setState({ submitting: true });
+        const data = new FormData();
+        data.append("CRAFT_CSRF_TOKEN", mountingPoint.dataset.csrf);
+        data.append("sectionId", "1");
+        data.append("enabled", "0");
+        data.append("title", this.state.title);
+
+        // fields[myFieldHandle][new:1][type]
+        for (let i = 0; i < this.state.view.length; i++) {
+            // 'fields[<FieldHandle>][sortOrder][]', 'new:1'
+            data.append(`fields[pageBuilder][sortOrder][]`, `new${i + 1}`);
+            data.append(
+                `fields[pageBuilder][blocks][new${i + 1}][type]`,
+                (() => {
+                    let arr = this.state.view[i].split("-");
+                    let capital = arr.map((item, index) => (index ? item.charAt(0).toUpperCase() + item.slice(1).toLowerCase() : item));
+                    let capitalString = capital.join("");
+                    return capitalString;
+                })()
+            );
+        }
+
+        const request = await fetch(`${location.origin}/actions/entries/save-entry`, {
+            method: "POST",
+            credentials: "include",
+            headers: new Headers({
+                Accept: "application/json",
+            }),
+            body: data,
+        });
+        const response = await request.json();
+        if (request.ok) {
+            if (response?.success) {
+                location.href = `${location.origin}/${mountingPoint.dataset.cpTrigger}/entries/pages/${response.id}`;
+            } else {
+                this.setState({ submitting: false });
+            }
+        } else {
+            this.setState({ submitting: true });
+        }
+    };
+
     // Render Functions =========================================================================================================
 
     private renderBlockButton = (block: IBlock, group: string) => {
@@ -419,20 +464,35 @@ class PageBuilder extends Component<{}, PageBuilderState> {
             );
         }
 
+        let submitting = null;
+        if (this.state.submitting) {
+            submitting = (
+                // @ts-ignore
+                <div className="pt-submitting">
+                    <div>
+                        <p>Creating page...</p>
+                        {/* 
+                        // @ts-ignore */}
+                        <circle-rail-spinner role="alert" aria-busy="true" aria-live="polite"></circle-rail-spinner>;
+                    </div>
+                </div>
+            );
+        }
+
         return (
             <Fragment>
-                <header>
+                <header style={{ filter: this.state.submitting ? "blur(4px)" : "" }}>
                     <TitleInput value={this.state.title} callback={this.updateTitle.bind(this)} />
                     <div>
                         <button onClick={this.handleReset} className="pt-bttn -danger -text mr-1">
                             Reset Page
                         </button>
-                        <button onClick={null} className="pt-bttn -solid -primary">
+                        <button onClick={this.createPage} className="pt-bttn -solid -primary">
                             Create Page
                         </button>
                     </div>
                 </header>
-                <main className="page-builder">
+                <main style={{ filter: this.state.submitting ? "blur(4px)" : "" }} className="page-builder">
                     <aside>{aside}</aside>
                     <div className="view" ref={this.view}>
                         <div className={`page ${this.state.drag.over ? "can-drop" : ""}`} onDragOver={this.dragOver} onDragLeave={this.dragLeave} onDrop={this.handleDrop}>
@@ -451,6 +511,7 @@ class PageBuilder extends Component<{}, PageBuilderState> {
                     onDragLeave={this.endBodyDrag}
                     className={`capture-scroll bottom ${this.state.drag.handle !== null || this.state.drag.index !== null ? "is-active" : ""}`}
                 ></div>
+                {submitting}
             </Fragment>
         );
     }
