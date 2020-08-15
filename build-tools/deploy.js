@@ -9,7 +9,7 @@ ghPages.publish(
             email: process.env.EMAIL,
         },
         repo: "https://" + process.env.ACCESS_TOKEN + "@github.com/" + process.env.USERNAME + "/" + process.env.PROJECT + ".git",
-        silent: true,
+        silent: false,
     },
     (error) => {
         if (error) {
