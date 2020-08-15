@@ -1,0 +1,87 @@
+.pt-block {
+    display: block;
+    width: 100%;
+    position: relative;
+
+    &:hover,
+    &:focus-within {
+        .pt-block-menu {
+            opacity: 1;
+            visibility: visible;
+        }
+    }
+
+    .pt-block-menu {
+        z-index: 9999;
+        height: 36px;
+        border-radius: 18px;
+        background-color: var(--white);
+        box-shadow: var(--shadow-lg);
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        border: 1px solid var(--grey-100);
+        opacity: 0;
+        visibility: hidden;
+        transition: all 150ms var(--ease-in-out);
+        padding: 0 0.125rem;
+
+        .pt-block-button {
+            width: 36px;
+            height: 36px;
+            padding: 0;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            color: var(--grey-700);
+            transition: all 150ms var(--ease-in-out);
+
+            &.-danger {
+                &::before {
+                    background-color: var(--danger-900);
+                }
+            }
+
+            &.-move {
+                cursor: grab;
+
+                &:active {
+                    cursor: grabbing;
+                }
+            }
+
+            &:hover,
+            &:focus {
+                &::before {
+                    opacity: 0.05;
+                }
+
+                &.-danger {
+                    color: var(--danger-700);
+                }
+            }
+
+            &:active {
+                &::before {
+                    opacity: 0.1;
+                }
+            }
+
+            &::before {
+                content: "";
+                background-color: var(--grey-900);
+                width: calc(100% - 4px);
+                height: calc(100% - 4px);
+                border-radius: 50%;
+                position: absolute;
+                opacity: 0;
+                transition: all 150ms var(--ease-in-out);
+            }
+
+            svg {
+                width: 16px;
+                height: 16px;
+            }
+        }
+    }
+}

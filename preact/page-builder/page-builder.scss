@@ -35,6 +35,8 @@
                 display: block;
                 width: 100%;
                 padding: 2rem;
+                pointer-events: none;
+                user-select: none;
 
                 p {
                     border: 1px dashed var(--primary-400);

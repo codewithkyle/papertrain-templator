@@ -26,6 +26,7 @@ export class TitleInput extends Component<TitleInputProps, {}> {
     render() {
         return (
             <input
+                autofocus
                 className="title-input"
                 type="text"
                 // @ts-ignore

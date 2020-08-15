@@ -9,13 +9,14 @@ import "./circle-rail-spinner.scss";
 
 import { TitleInput } from "./title-input";
 import { BlockButton } from "./block-button";
+import { Block } from "./block";
 
 type BlockGroup = {
     handle: string;
     label: string;
 };
 
-type Block = {
+type IBlock = {
     handle: string;
     group: string;
     label: string;
@@ -28,7 +29,7 @@ type BlockData = {
 type PageBuilderState = {
     title: string;
     groups: Array<BlockGroup>;
-    blocks: Array<Block>;
+    blocks: Array<IBlock>;
     blockData: {
         [key: string]: BlockData;
     };
@@ -80,7 +81,7 @@ class PageBuilder extends Component<{}, PageBuilderState> {
     }
 
     private async fetchBlock(handle: string) {
-        let block: Block = null;
+        let block: IBlock = null;
         for (let i = 0; i < this.state.blocks.length; i++) {
             if (this.state.blocks[i].handle === handle) {
                 block = this.state.blocks[i];
@@ -160,7 +161,7 @@ class PageBuilder extends Component<{}, PageBuilderState> {
         this.setState(updatedState);
     }
 
-    private renderBlockButton = (block: Block, group: string) => {
+    private renderBlockButton = (block: IBlock, group: string) => {
         if (block.group === group) {
             return <BlockButton label={block.label} handle={block.handle} callback={this.setDragHandle.bind(this)} addBlockCallback={this.loadBlock.bind(this)} />;
         }
@@ -170,15 +171,21 @@ class PageBuilder extends Component<{}, PageBuilderState> {
         let blocks = this.state.blocks.map((block) => this.renderBlockButton(block, group.handle));
         return (
             <div className="block w-full mb-4">
-                <h3 className="block w-full mb-1 font-lg font-grey-800 font-medium cursor-default text-uppercase">{group.label}</h3>
+                <h3 className="block w-full mb-1 font-grey-800 font-medium cursor-default text-uppercase">{group.label}</h3>
                 {blocks}
             </div>
         );
     };
 
-    private renderBlock = (handle: string) => {
+    private removeBlock(index: number) {
+        const updatedStata = { ...this.state };
+        updatedStata.view.splice(index, 1);
+        this.setState(updatedStata);
+    }
+
+    private renderBlock = (handle: string, index: number) => {
         let html = this.state.blockData[handle].html;
-        return <div style={{ display: "block", position: "relative", width: "100%" }} dangerouslySetInnerHTML={{ __html: html }}></div>;
+        return <Block index={index} html={html} removeCallback={this.removeBlock.bind(this)} />;
     };
 
     componentWillMount() {
@@ -194,6 +201,12 @@ class PageBuilder extends Component<{}, PageBuilderState> {
         brixi.href = `${location.origin}/assets/brixi.css`;
         brixi.rel = "stylesheet";
         document.head.appendChild(brixi);
+
+        // Buttons
+        const buttons = document.createElement("link");
+        buttons.href = `${location.origin}/assets/buttons.css`;
+        buttons.rel = "stylesheet";
+        document.head.appendChild(buttons);
     }
 
     render() {
@@ -212,15 +225,20 @@ class PageBuilder extends Component<{}, PageBuilderState> {
         }
 
         let view: any = null;
+        let dropzone = null;
         if (this.state.view.length) {
-            view = this.state.view.map((handle) => this.renderBlock(handle));
+            view = this.state.view.map((handle, index) => this.renderBlock(handle, index));
+            if (this.state.drag.over) {
+                dropzone = (
+                    <div className="drop-zone">
+                        <p>Release the block to add it to the page.</p>
+                    </div>
+                );
+            }
         } else if (!this.state.drag.over) {
             view = <p className="block w-full text-center p-4 font-grey-700">Click and drag the block on the left to begin building a new page.</p>;
-        }
-
-        let dropZone = null;
-        if (this.state.drag.over) {
-            dropZone = (
+        } else {
+            view = (
                 <div className="drop-zone">
                     <p>Release the block to add it to the page.</p>
                 </div>
@@ -245,7 +263,7 @@ class PageBuilder extends Component<{}, PageBuilderState> {
                     <div className="view">
                         <div className={`page ${this.state.drag.over ? "can-drop" : ""}`} onDragOver={this.dragOver} onDragLeave={this.dragLeave} onDrop={this.handleDrop}>
                             {view}
-                            {dropZone}
+                            {dropzone}
                         </div>
                     </div>
                 </main>
