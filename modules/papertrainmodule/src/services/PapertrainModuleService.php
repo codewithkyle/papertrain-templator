@@ -1,8 +1,8 @@
 <?php
-/**
+/** 
  * papertrain module for Craft CMS 3.x
  *
- * Papertrain core
+ * Papertrain core  
  *
  * @link      https://papertrain.io/
  * @copyright Copyright (c) 2020 Kyle Andrews
@@ -28,9 +28,154 @@ class PapertrainModuleService extends Component
     // Public Methods
     // =========================================================================
 
+    public function getFieldData($value)
+    {
+        $data = [];
+        switch (gettype($value))
+        {
+            case "string":
+                $data = $value;
+                break;
+            case "boolean":
+                $data = $value ? "1" : "0";
+                break;
+            case "object":
+                if (isset($value->elementType))
+                {
+                    switch ($value->elementType)
+                    {
+                        case "craft\\elements\\Asset":
+                            $data = $value[0]->id;
+                            break;
+                        case "craft\\elements\\Category":
+                            $data = $value[0]->id;
+                            break;
+                        case "craft\\elements\\Entry":
+                            $data = $value[0]->id;
+                            break;
+                        case "craft\\elements\\User":
+                            $data = $value[0]->id;
+                            break;
+                        case "verbb\\supertable\\elements\\SuperTableBlockElement":
+                            if (!empty($value))
+                            {
+                                if (count($value) > 1)
+                                {
+                                    foreach ($value as $block)
+                                    {
+                                        if (isset($block->ownerId) && isset($block->fieldId))
+                                        {
+                                            $data[$block->fieldId] = $this->getSuperTableFields($block->ownerId, $block->fieldId);
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    if (isset($value[0]->ownerId) && isset($value[0]->fieldId))
+                                    {
+                                        $data = $this->getSuperTableFields($value[0]->ownerId, $value[0]->fieldId);
+                                    }
+                                }
+                            }
+                            break;
+                        case "craft\\elements\\MatrixBlock":
+                            if (!empty($value))
+                            {
+                                if (count($value) > 1)
+                                {
+                                    foreach ($value as $block)
+                                    {
+                                        if (isset($block->ownerId) && isset($block->id))
+                                        {
+                                            $data[] = $this->getMatrixBlockFields($block->ownerId, $block->id);
+                                        }
+                                    }
+                                    $data = array_values($data);
+                                    $remuxedData = [];
+                                    foreach ($data as $block)
+                                    {
+                                        foreach ($block as $key => $fields)
+                                        {
+                                            $remuxedData[$key] = $fields;
+                                        }
+                                    }
+                                    $data = $remuxedData;
+                                }
+                                else
+                                {
+                                    if (isset($value[0]->ownerId) && isset($value[0]->id))
+                                    {
+                                        $data = $this->getMatrixBlockFields($value[0]->ownerId, $value[0]->id);
+                                    }
+                                }
+                            }
+                            break;
+                        default:
+                            if (isset($value->id))
+                            {
+                                // This field is some sort of element
+                                $data = $value->id;
+                            }
+                            else
+                            {
+                                // Can't determine what this field is, probably something custom
+                                $data = $value;
+                            }
+                            break;
+                    }
+                }
+                else
+                {
+                    $data = $value;
+                }
+                break;
+            default:
+                $data = gettype($value);
+                break;
+        }
+        return $data;
+    }
+
+    public function getSuperTableFields(string $ownerId, string $fieldId)
+    {
+        $data = [];
+        $blocks = \verbb\supertable\elements\SuperTableBlockElement::find()
+                                ->ownerId($ownerId)
+                                ->fieldId($fieldId)
+                                ->all();
+        foreach ($blocks as $block)
+        {
+            $fields = $block->getFieldLayout()->getFields();
+            foreach ($fields as $field)
+            {
+                $value = $block->getFieldValue($field->handle);
+                $data[$block->id][$field->handle] = $this->getFieldData($value);
+            }
+        }
+        return $data;
+    }
+
+    public function getMatrixBlockFields(string $ownerId, string $id)
+    {
+        $data = [];
+        $blocks = \craft\elements\MatrixBlock::find()
+                    ->ownerId($ownerId)
+                    ->id($id)
+                    ->all();
+        foreach ($blocks as $block)
+        {
+            $fields = $block->getFieldValues();
+            foreach ($fields as $key => $value)
+            {
+                $data[$block->id][$key] = $this->getFieldData($value);
+            }
+        }
+        return $data;
+    }
+
     public function getBlockData(string $id)
     {
-        $html = [];
+        $data = [];
         $entry = \craft\elements\Entry::find()
                     ->section('demoBlocks')
                     ->with(['pageBuilder'])
@@ -38,14 +183,20 @@ class PapertrainModuleService extends Component
                     ->one();
         if (!empty($entry))
         {
-            $oldMode = Craft::$app->view->getTemplateMode();
-            Craft::$app->view->setTemplateMode(View::TEMPLATE_MODE_SITE);
-            $html = Craft::$app->view->renderTemplate('_page-builder/data', [
-                'data' => $entry['pageBuilder'][0],
-            ]);
-            Craft::$app->view->setTemplateMode($oldMode);
+            if (!empty($entry['pageBuilder']))
+            {
+                $block = \craft\elements\MatrixBlock::find()
+                            ->ownerId($entry->id)
+                            ->id($entry['pageBuilder'][0]->id)
+                            ->one();
+                $fields = $block->getFieldValues();
+                foreach ($fields as $key => $value)
+                {
+                    $data[$key] = $this->getFieldData($value);
+                }
+            }
         }
-        return json_decode($html);
+        return $data;
     }
 
     public function getConfig()

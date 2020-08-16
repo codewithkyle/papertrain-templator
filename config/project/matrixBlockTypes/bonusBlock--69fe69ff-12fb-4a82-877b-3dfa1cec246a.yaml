@@ -1,0 +1,40 @@
+field: 4855380c-d6d1-4a10-8f3f-64a777938938
+fieldLayouts:
+  7a25c182-4444-4dbf-8f8b-de192ffe8f61:
+    tabs:
+      -
+        elements:
+          -
+            fieldUid: d5dfd53a-e7bd-4ff0-b206-162fd3fe39a6
+            instructions: null
+            label: null
+            required: false
+            tip: null
+            type: craft\fieldlayoutelements\CustomField
+            warning: null
+            width: 100
+        name: Content
+        sortOrder: 1
+fields:
+  d5dfd53a-e7bd-4ff0-b206-162fd3fe39a6:
+    contentColumnType: text
+    fieldGroup: null
+    handle: bonusBlockText
+    instructions: ''
+    name: 'Bonus Block Text'
+    searchable: false
+    settings:
+      byteLimit: null
+      charLimit: null
+      code: ''
+      columnType: null
+      initialRows: '4'
+      multiline: ''
+      placeholder: ''
+      uiMode: normal
+    translationKeyFormat: null
+    translationMethod: none
+    type: craft\fields\PlainText
+handle: bonusBlock
+name: 'Bonus Block'
+sortOrder: 2

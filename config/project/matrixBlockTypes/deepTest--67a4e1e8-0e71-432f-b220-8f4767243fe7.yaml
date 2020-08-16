@@ -1,0 +1,84 @@
+field: 3a5bd92c-3b75-423a-97d3-6981864e3727
+fieldLayouts:
+  8dd87771-5cd6-49fb-918b-762c96ae5687:
+    tabs:
+      -
+        elements:
+          -
+            fieldUid: 68886f1c-edc5-41a9-b415-e96062487a19
+            instructions: null
+            label: null
+            required: false
+            tip: null
+            type: craft\fieldlayoutelements\CustomField
+            warning: null
+            width: 100
+          -
+            fieldUid: 55aba7e0-fd38-4d2d-98fe-c1dd51e8302a
+            instructions: null
+            label: null
+            required: false
+            tip: null
+            type: craft\fieldlayoutelements\CustomField
+            warning: null
+            width: 100
+        name: Content
+        sortOrder: 1
+fields:
+  55aba7e0-fd38-4d2d-98fe-c1dd51e8302a:
+    contentColumnType: string
+    fieldGroup: null
+    handle: superTableField
+    instructions: ''
+    name: 'Super Table Field'
+    searchable: false
+    settings:
+      columns:
+        __assoc__:
+          -
+            - 6dfc07a7-6291-416f-b80e-4dc8b374969b
+            -
+              __assoc__:
+                -
+                  - width
+                  - ''
+          -
+            - 4855380c-d6d1-4a10-8f3f-64a777938938
+            -
+              __assoc__:
+                -
+                  - width
+                  - ''
+      contentTable: '{{%stc_6_supertablefield}}'
+      fieldLayout: table
+      maxRows: ''
+      minRows: ''
+      placeholderKey: null
+      propagationMethod: all
+      selectionLabel: ''
+      staticField: ''
+    translationKeyFormat: null
+    translationMethod: site
+    type: verbb\supertable\fields\SuperTableField
+  68886f1c-edc5-41a9-b415-e96062487a19:
+    contentColumnType: text
+    fieldGroup: null
+    handle: baseBlockHeading
+    instructions: ''
+    name: 'Base Block Heading'
+    searchable: false
+    settings:
+      byteLimit: null
+      charLimit: null
+      code: ''
+      columnType: null
+      initialRows: '4'
+      multiline: ''
+      placeholder: ''
+      uiMode: normal
+    translationKeyFormat: null
+    translationMethod: none
+    type: craft\fields\PlainText
+handle: deepTest
+name: 'Deep Test'
+sortOrder: 5

@@ -1,0 +1,68 @@
+field: 4855380c-d6d1-4a10-8f3f-64a777938938
+fieldLayouts:
+  7a206651-a973-4330-acee-7f832a271eaf:
+    tabs:
+      -
+        elements:
+          -
+            fieldUid: d50ccdab-341b-410f-aa7b-48438fe137cb
+            instructions: null
+            label: null
+            required: false
+            tip: null
+            type: craft\fieldlayoutelements\CustomField
+            warning: null
+            width: 100
+          -
+            fieldUid: 6ddbc495-8c9b-4baf-af07-e47fc55a2765
+            instructions: null
+            label: null
+            required: false
+            tip: null
+            type: craft\fieldlayoutelements\CustomField
+            warning: null
+            width: 100
+        name: Content
+        sortOrder: 1
+fields:
+  6ddbc495-8c9b-4baf-af07-e47fc55a2765:
+    contentColumnType: string
+    fieldGroup: null
+    handle: superTableFieldAgain
+    instructions: ''
+    name: 'Super Table Field Again'
+    searchable: false
+    settings:
+      contentTable: '{{%stc_5_supertablefieldagain}}'
+      fieldLayout: table
+      maxRows: ''
+      minRows: ''
+      placeholderKey: null
+      propagationMethod: all
+      selectionLabel: ''
+      staticField: ''
+    translationKeyFormat: null
+    translationMethod: site
+    type: verbb\supertable\fields\SuperTableField
+  d50ccdab-341b-410f-aa7b-48438fe137cb:
+    contentColumnType: text
+    fieldGroup: null
+    handle: nestedBlockTitle
+    instructions: ''
+    name: 'Nested Block Title'
+    searchable: false
+    settings:
+      byteLimit: null
+      charLimit: null
+      code: ''
+      columnType: null
+      initialRows: '4'
+      multiline: ''
+      placeholder: ''
+      uiMode: normal
+    translationKeyFormat: null
+    translationMethod: none
+    type: craft\fields\PlainText
+handle: nestedBlock
+name: 'Nested Block'
+sortOrder: 1
