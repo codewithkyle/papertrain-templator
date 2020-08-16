@@ -8,6 +8,7 @@
         { "handle": "carousel-hero", "label": "Carousel Hero", "group": "heros", "resources": [], "id": 233 },
         { "handle": "homepage-hero", "label": "Homepage Hero", "group": "heros", "resources": [], "id": 252 },
         { "handle": "spacer-block", "label": "Spacer", "group": "utilities", "resources": [], "id": 189 },
-        { "handle": "rich-text", "label": "Rich Text", "group": "content", "resources": [], "id": 185 }
+        { "handle": "rich-text", "label": "Rich Text", "group": "content", "resources": [], "id": 185 },
+        { "handle": "deep-test", "label": "Deep Test", "group": "content", "resources": [], "id": 542 }
     ]
 }
