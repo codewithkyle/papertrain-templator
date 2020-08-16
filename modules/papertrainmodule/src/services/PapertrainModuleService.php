@@ -61,7 +61,7 @@ class PapertrainModuleService extends Component
                             {
                                 if (count($value) > 1)
                                 {
-                                    foreach ($value as $block)
+                                    foreach ($value->all() as $block)
                                     {
                                         if (isset($block->ownerId) && isset($block->fieldId))
                                         {
@@ -83,7 +83,7 @@ class PapertrainModuleService extends Component
                             {
                                 if (count($value) > 1)
                                 {
-                                    foreach ($value as $block)
+                                    foreach ($value->all() as $block)
                                     {
                                         if (isset($block->ownerId) && isset($block->id))
                                         {
