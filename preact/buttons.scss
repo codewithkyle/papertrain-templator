@@ -43,7 +43,7 @@
 
     &.-text {
         padding: 0 0.5rem;
-        color: $grey-800;
+        color: $grey-700;
 
         &.-primary {
             &:hover,
@@ -67,6 +67,16 @@
 
             &::before {
                 background-color: $grey-900;
+            }
+        }
+
+        &.-grey {
+            &:active {
+                color: $grey-800;
+            }
+
+            &::before {
+                background-color: $grey-600;
             }
         }
 
@@ -111,11 +121,11 @@
         &.-danger {
             &:hover,
             &:focus {
-                color: $danger-800;
+                color: $danger-700;
             }
 
             &:active {
-                color: $danger-900;
+                color: $danger-800;
             }
 
             &::before {
@@ -125,6 +135,8 @@
 
         &:hover,
         &:focus {
+            color: $grey-800;
+
             &::before {
                 opacity: 0.1;
                 transform: translate(-50%, -50%) scale(1);
@@ -413,6 +425,10 @@
 
     &.-round {
         border-radius: 50%;
+
+        &::before {
+            border-radius: 50%;
+        }
     }
 
     &.-icon-only {
