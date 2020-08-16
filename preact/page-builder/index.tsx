@@ -202,19 +202,7 @@ class PageBuilder extends Component<{}, PageBuilderState> {
         }
 
         setTimeout(() => {
-            if (targetIndex !== null && direction !== null) {
-                let index = targetIndex + direction;
-                const blockEl = document.body.querySelector(`.pt-block[data-index="${index}"]`);
-                if (blockEl) {
-                    const bounds = blockEl.getBoundingClientRect();
-                    const center = bounds.top + bounds.height / 2;
-                    this.view.current.scrollTo({
-                        top: center,
-                        left: 0,
-                        behavior: "smooth",
-                    });
-                }
-            } else {
+            if (targetIndex === null && direction === null) {
                 this.view.current.scrollTo({
                     top: this.view.current.scrollHeight,
                     left: 0,
@@ -286,16 +274,6 @@ class PageBuilder extends Component<{}, PageBuilderState> {
         button.blur();
 
         setTimeout(() => {
-            const blockEl = document.body.querySelector(`.pt-block[data-index="${targetIndex}"]`);
-            if (blockEl) {
-                const bounds = blockEl.getBoundingClientRect();
-                const center = bounds.top + bounds.height / 2;
-                this.view.current.scrollTo({
-                    top: center,
-                    left: 0,
-                    behavior: "smooth",
-                });
-            }
             this.setState({
                 drag: {
                     over: false,
@@ -351,16 +329,6 @@ class PageBuilder extends Component<{}, PageBuilderState> {
         updatedState.view.splice(index, 0, block);
         this.setState(updatedState);
         setTimeout(() => {
-            const blockEl = document.body.querySelector(`.pt-block[data-index="${index + 1}"]`);
-            if (blockEl) {
-                const bounds = blockEl.getBoundingClientRect();
-                const center = bounds.top + bounds.height / 2;
-                this.view.current.scrollTo({
-                    top: center,
-                    left: 0,
-                    behavior: "smooth",
-                });
-            }
             this.setState({
                 drag: {
                     over: false,
