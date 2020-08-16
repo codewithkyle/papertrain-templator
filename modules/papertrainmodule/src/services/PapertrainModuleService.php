@@ -79,7 +79,6 @@ class PapertrainModuleService extends Component
                         'label' => $entry->title,
                         'group' => $entry->parent->slug ?? null,
                         'resources' => $resources,
-                        'data' => $block->getFieldValues(),
                         'id' => $entry->id,
                     ];
                     break;
