@@ -1,0 +1,16 @@
+{
+    "baseBlockHeading": "Enter the rabbit hole",
+    "superTableField": {
+        "15": {
+            "544": {
+                "superTableHeading": "Hold my beer",
+                "matrixField": {
+                    "546": { "nestedBlockTitle": "I can't make another table", "superTableFieldAgain": [] },
+                    "545": { "nestedBlockTitle": "Is this the limit?", "superTableFieldAgain": [] },
+                    "549": { "bonusBlockText": "What does this look like?" }
+                }
+            },
+            "547": { "superTableHeading": "I'm going in", "matrixField": { "548": { "nestedBlockTitle": "What is happening?", "superTableFieldAgain": [] } } }
+        }
+    }
+}
