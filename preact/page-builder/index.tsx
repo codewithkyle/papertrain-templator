@@ -20,6 +20,7 @@ type IBlock = {
     handle: string;
     group: string;
     label: string;
+    resouces: Array<string>;
 };
 
 type BlockData = {
@@ -113,9 +114,43 @@ class PageBuilder extends Component<{}, PageBuilderState> {
         return await htmlRequest.text();
     }
 
+    private async loadBlockResources(handle: string) {
+        let block;
+        for (let i = 0; i < this.state.blocks.length; i++) {
+            if (this.state.blocks[i].handle === handle) {
+                block = this.state.blocks[i];
+                break;
+            }
+        }
+        for (let i = 0; i < block.resources.length; i++) {
+            let type = block.resources[i].match(/(\.css)$/) ? "link" : "script";
+            let url;
+            if (block.resources[i].match(/^(http)|^(https)/)) {
+                url = block.resources[i];
+            } else {
+                url = `${location.origin}/assets/${block.resources[i]}`;
+            }
+            const el: any = document.createElement(type);
+            if (type === "link") {
+                if (!document.head.querySelector(`link[href="${url}"]`)) {
+                    el.href = url;
+                    el.rel = "stylesheet";
+                    console.log("asd");
+                }
+            } else {
+                if (!document.head.querySelector(`script[src="${url}"]`)) {
+                    el.src = url;
+                    el.type = url.match(/(\.mjs)/) ? "module" : "text/javascript";
+                }
+            }
+            document.head.appendChild(el);
+        }
+    }
+
     private async loadBlock(handle: string, targetIndex: number = null, direction: number = null) {
         if (!this.state.blockData?.[handle]) {
             const html = await this.fetchBlock(handle);
+            this.loadBlockResources(handle);
             const updatedState = { ...this.state };
             updatedState.blockData[handle] = {
                 html: html,

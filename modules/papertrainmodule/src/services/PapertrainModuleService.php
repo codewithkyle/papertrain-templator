@@ -47,10 +47,17 @@ class PapertrainModuleService extends Component
                     ];
                     break;
                 case "pageBuilderBlock":
+                    $resources = [];
+                    $resourcesTable = $entry->getFieldValue('pageBuilderResources');
+                    foreach ((array) $resourcesTable as $row)
+                    {
+                        $resources[] = $row['file'];
+                    }
                     $ret['blocks'][] = [
                         'handle' => $entry->slug,
                         'label' => $entry->title,
                         'group' => $entry->parent->slug ?? null,
+                        'resources' => $resources,
                     ];
                     break;
             }

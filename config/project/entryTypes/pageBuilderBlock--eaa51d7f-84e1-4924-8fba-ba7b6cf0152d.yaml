@@ -39,6 +39,19 @@ fieldLayouts:
             width: 100
         name: Content
         sortOrder: 1
+      -
+        elements:
+          -
+            fieldUid: 5a3b6e1f-1731-4f87-b4dd-5664bee5d630
+            instructions: null
+            label: null
+            required: false
+            tip: null
+            type: craft\fieldlayoutelements\CustomField
+            warning: null
+            width: 100
+        name: Settings
+        sortOrder: 2
 handle: pageBuilderBlock
 hasTitleField: true
 name: Block

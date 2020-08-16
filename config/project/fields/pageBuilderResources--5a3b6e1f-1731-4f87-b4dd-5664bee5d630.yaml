@@ -1,0 +1,32 @@
+contentColumnType: text
+fieldGroup: a7bfc019-c2ed-4169-afeb-5a6abb515045
+handle: pageBuilderResources
+instructions: 'Load additional JavaScript or CSS files with this block. Provide a full URL or the name of the file within the public assets directory. Remember that JavaScript files end in the mjs format.'
+name: Resources
+searchable: false
+settings:
+  addRowLabel: 'Add a resource'
+  columnType: text
+  columns:
+    __assoc__:
+      -
+        - col1
+        -
+          __assoc__:
+            -
+              - heading
+              - File
+            -
+              - handle
+              - file
+            -
+              - width
+              - ''
+            -
+              - type
+              - singleline
+  maxRows: ''
+  minRows: ''
+translationKeyFormat: null
+translationMethod: none
+type: craft\fields\Table
