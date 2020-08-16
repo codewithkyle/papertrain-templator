@@ -116,7 +116,7 @@ class PapertrainModule extends Module
                 // API
                 $event->rules['papertrain/api/render/block/<id:\d+>/<handle:.*>'] = 'papertrain-module/default/render-block';
                 $event->rules['papertrain/api/config.json'] = 'papertrain-module/default/load-config';
-                $event->rules['papertrain/api/block/<id:\d+>'] = 'papertrain-module/default/get-block';
+                $event->rules['papertrain/api/block/<id:\d+>.json'] = 'papertrain-module/default/get-block';
 
                 // Utility
                 $event->rules['papertrain/core/preact/<script:.*>'] = 'papertrain-module/default/load-core-script';

@@ -155,7 +155,7 @@ class PageBuilder extends Component<{}, PageBuilderState> {
     }
 
     private async fetchBlockData(id: string): Promise<object> {
-        const request = await fetch(`${location.origin}/${mountingPoint.dataset.cpTrigger}/papertrain/api/block/${id}`, {
+        const request = await fetch(`${location.origin}/${mountingPoint.dataset.cpTrigger}/papertrain/api/block/${id}.json`, {
             method: "GET",
             credentials: "include",
             headers: new Headers({
