@@ -21,10 +21,12 @@ type IBlock = {
     group: string;
     label: string;
     resouces: Array<string>;
+    id: string;
 };
 
 type BlockData = {
     html: string;
+    data: object;
 };
 
 type PageBuilderState = {
@@ -40,7 +42,8 @@ type PageBuilderState = {
         over: boolean;
         handle: string;
         index: number;
-        scrollDirection;
+        scrollDirection: number;
+        id: string;
     };
     keyboardFocusedIndex: number;
     submitting: boolean;
@@ -68,6 +71,7 @@ class PageBuilder extends Component<{}, PageBuilderState> {
                 handle: null,
                 index: null,
                 scrollDirection: 0,
+                id: null,
             },
             keyboardFocusedIndex: null,
             submitting: false,
@@ -93,20 +97,23 @@ class PageBuilder extends Component<{}, PageBuilderState> {
         }
     }
 
-    private async fetchBlock(handle: string): Promise<string> {
+    private async fetchBlock(handle: string, id: string): Promise<string> {
         // Load CSS
-        const stylesheet = document.createElement("link");
-        stylesheet.href = `${location.origin}/assets/${handle}.css`;
-        stylesheet.rel = "stylesheet";
-        document.head.appendChild(stylesheet);
+        if (!document.head.querySelector(`link[href="${location.origin}/assets/${handle}.css"]`)) {
+            const stylesheet = document.createElement("link");
+            stylesheet.href = `${location.origin}/assets/${handle}.css`;
+            stylesheet.rel = "stylesheet";
+            document.head.appendChild(stylesheet);
+        }
 
         // Load script
-        const script = document.createElement("script");
-        script.src = `${location.origin}/assets/${handle}.mjs`;
-        script.type = "module";
-        document.head.appendChild(script);
-
-        const htmlRequest = await fetch(`${location.origin}/${mountingPoint.dataset.cpTrigger}/papertrain/api/render/${handle}`, {
+        if (!document.head.querySelector(`script[src="${location.origin}/assets/${handle}.mjs"]`)) {
+            const script = document.createElement("script");
+            script.src = `${location.origin}/assets/${handle}.mjs`;
+            script.type = "module";
+            document.head.appendChild(script);
+        }
+        const htmlRequest = await fetch(`${location.origin}/${mountingPoint.dataset.cpTrigger}/papertrain/api/render/block/${id}/${handle}`, {
             method: "GET",
             credentials: "include",
         });
@@ -147,13 +154,28 @@ class PageBuilder extends Component<{}, PageBuilderState> {
         }
     }
 
-    private async loadBlock(handle: string, targetIndex: number = null, direction: number = null) {
-        if (!this.state.blockData?.[handle]) {
-            const html = await this.fetchBlock(handle);
+    private async fetchBlockData(id: string): Promise<object> {
+        const request = await fetch(`${location.origin}/${mountingPoint.dataset.cpTrigger}/papertrain/api/block/${id}`, {
+            method: "GET",
+            credentials: "include",
+            headers: new Headers({
+                Accept: "application/json",
+            }),
+        });
+
+        const response = await request.json();
+        return response.data;
+    }
+
+    private async loadBlock(handle: string, targetIndex: number = null, direction: number = null, id: string = null) {
+        if (!this.state.blockData?.[handle] && id !== null) {
             this.loadBlockResources(handle);
+            const html = await this.fetchBlock(handle, id);
+            const data = await this.fetchBlockData(id);
             const updatedState = { ...this.state };
             updatedState.blockData[handle] = {
                 html: html,
+                data: data,
             };
             if (targetIndex !== null && direction !== null) {
                 if (direction === -1) {
@@ -205,6 +227,7 @@ class PageBuilder extends Component<{}, PageBuilderState> {
                     handle: null,
                     index: null,
                     scrollDirection: 0,
+                    id: null,
                 },
             });
         }, 150);
@@ -217,6 +240,7 @@ class PageBuilder extends Component<{}, PageBuilderState> {
                 over: true,
                 index: index,
                 scrollDirection: 0,
+                id: null,
             },
         });
     }
@@ -237,8 +261,8 @@ class PageBuilder extends Component<{}, PageBuilderState> {
     }
 
     private shiftBlocks(indexToShift: number, targetIndex: number, direction: number) {
-        if (indexToShift === null && this.state.drag.handle !== null) {
-            this.loadBlock(this.state.drag.handle, targetIndex, direction);
+        if (indexToShift === null && this.state.drag.handle !== null && this.state.drag.id !== null) {
+            this.loadBlock(this.state.drag.handle, targetIndex, direction, this.state.drag.id);
             return;
         } else if (targetIndex >= this.state.view.length || targetIndex < 0) {
             return;
@@ -278,6 +302,7 @@ class PageBuilder extends Component<{}, PageBuilderState> {
                     handle: null,
                     index: null,
                     scrollDirection: 0,
+                    id: null,
                 },
             });
         }, 150);
@@ -313,9 +338,10 @@ class PageBuilder extends Component<{}, PageBuilderState> {
         this.setState(updatedState);
     }
 
-    private setDragHandle(handle: string) {
+    private setDragHandle(handle: string, id: string) {
         const updatedState = { ...this.state };
         updatedState.drag.handle = handle;
+        updatedState.drag.id = id;
         this.setState(updatedState);
     }
 
@@ -341,6 +367,7 @@ class PageBuilder extends Component<{}, PageBuilderState> {
                     handle: null,
                     index: null,
                     scrollDirection: 0,
+                    id: null,
                 },
             });
         }, 150);
@@ -376,6 +403,7 @@ class PageBuilder extends Component<{}, PageBuilderState> {
                         handle: null,
                         index: null,
                         scrollDirection: 0,
+                        id: null,
                     },
                 });
             }, 150);
@@ -401,7 +429,7 @@ class PageBuilder extends Component<{}, PageBuilderState> {
     private handleDrop: EventListener = (e: DragEvent) => {
         e.preventDefault();
         if (this.state.drag.handle && !this.state.view.length) {
-            this.loadBlock(this.state.drag.handle);
+            this.loadBlock(this.state.drag.handle, null, null, this.state.drag.id);
         }
     };
 
@@ -505,7 +533,7 @@ class PageBuilder extends Component<{}, PageBuilderState> {
 
     private renderBlockButton = (block: IBlock, group: string) => {
         if (block.group === group) {
-            return <BlockButton label={block.label} handle={block.handle} callback={this.setDragHandle.bind(this)} addBlockCallback={this.loadBlock.bind(this)} />;
+            return <BlockButton label={block.label} handle={block.handle} callback={this.setDragHandle.bind(this)} addBlockCallback={this.loadBlock.bind(this)} id={block.id} />;
         }
     };
 

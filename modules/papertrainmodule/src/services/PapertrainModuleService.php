@@ -28,6 +28,26 @@ class PapertrainModuleService extends Component
     // Public Methods
     // =========================================================================
 
+    public function getBlockData(string $id)
+    {
+        $html = [];
+        $entry = \craft\elements\Entry::find()
+                    ->section('demoBlocks')
+                    ->with(['pageBuilder'])
+                    ->id($id)
+                    ->one();
+        if (!empty($entry))
+        {
+            $oldMode = Craft::$app->view->getTemplateMode();
+            Craft::$app->view->setTemplateMode(View::TEMPLATE_MODE_SITE);
+            $html = Craft::$app->view->renderTemplate('_page-builder/data', [
+                'data' => $entry['pageBuilder'][0],
+            ]);
+            Craft::$app->view->setTemplateMode($oldMode);
+        }
+        return json_decode($html);
+    }
+
     public function getConfig()
     {
         $entries = \craft\elements\Entry::find()
@@ -53,11 +73,14 @@ class PapertrainModuleService extends Component
                     {
                         $resources[] = $row['file'];
                     }
+                    $block = \craft\elements\MatrixBlock::find()->ownerId($entry->id)->one();
                     $ret['blocks'][] = [
                         'handle' => $entry->slug,
                         'label' => $entry->title,
                         'group' => $entry->parent->slug ?? null,
                         'resources' => $resources,
+                        'data' => $block->getFieldValues(),
+                        'id' => $entry->id,
                     ];
                     break;
             }
@@ -65,19 +88,19 @@ class PapertrainModuleService extends Component
         return $ret;
     }
 
-    public function renderBlock(string $block)
+    public function renderBlock(string $id, string $handle)
     {
         $html = '';
         $entry = \craft\elements\Entry::find()
                     ->section('demoBlocks')
                     ->with(['pageBuilder'])
-                    ->slug($block)
+                    ->id($id)
                     ->one();
         if (!empty($entry))
         {
             $oldMode = Craft::$app->view->getTemplateMode();
             Craft::$app->view->setTemplateMode(View::TEMPLATE_MODE_SITE);
-            $html = Craft::$app->view->renderTemplate('_blocks/' . $block, [
+            $html = Craft::$app->view->renderTemplate('_blocks/' . $handle, [
                 'data' => $entry['pageBuilder'][0],
                 'imageFormat' => 'webp',
             ]);

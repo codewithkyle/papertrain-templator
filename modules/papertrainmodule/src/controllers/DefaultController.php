@@ -36,9 +36,15 @@ class DefaultController extends Controller
     // Public Methods
     // =========================================================================
 
-    public function actionRenderBlock(string $block)
+    public function actionRenderBlock(string $id, string $handle)
     {
-        return PapertrainModule::getInstance()->papertrainModuleService->renderBlock($block);
+        return PapertrainModule::getInstance()->papertrainModuleService->renderBlock($id, $handle);
+    }
+
+    public function actionGetBlock(string $id)
+    {
+        $data = PapertrainModule::getInstance()->papertrainModuleService->getBlockData($id);
+        return $this->asJson($data);
     }
 
     public function actionLoadCoreScript(string $script)

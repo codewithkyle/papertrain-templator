@@ -114,8 +114,9 @@ class PapertrainModule extends Module
             UrlManager::EVENT_REGISTER_CP_URL_RULES,
             function (RegisterUrlRulesEvent $event) {
                 // API
-                $event->rules['papertrain/api/render/<block:.*>'] = 'papertrain-module/default/render-block';
+                $event->rules['papertrain/api/render/block/<id:\d+>/<handle:.*>'] = 'papertrain-module/default/render-block';
                 $event->rules['papertrain/api/config.json'] = 'papertrain-module/default/load-config';
+                $event->rules['papertrain/api/block/<id:\d+>'] = 'papertrain-module/default/get-block';
 
                 // Utility
                 $event->rules['papertrain/core/preact/<script:.*>'] = 'papertrain-module/default/load-core-script';

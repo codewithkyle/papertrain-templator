@@ -7,6 +7,7 @@ type BlockButtonProps = {
     handle: string;
     callback: Function;
     addBlockCallback: Function;
+    id: string;
 };
 
 type BlockButtonState = {
@@ -29,7 +30,7 @@ export class BlockButton extends Component<BlockButtonProps, BlockButtonState> {
         this.setState({
             dragging: true,
         });
-        this.props.callback(this.props.handle);
+        this.props.callback(this.props.handle, this.props.id);
     };
 
     private endDrag: EventListener = () => {
@@ -37,7 +38,7 @@ export class BlockButton extends Component<BlockButtonProps, BlockButtonState> {
     };
 
     private click: EventListener = () => {
-        this.props.addBlockCallback(this.props.handle);
+        this.props.addBlockCallback(this.props.handle, null, null, this.props.id);
     };
 
     render() {
