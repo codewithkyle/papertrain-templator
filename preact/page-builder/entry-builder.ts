@@ -4,60 +4,12 @@ function convertToCamelCase(str: string) {
     return capital.join("");
 }
 
-function buildMatrixBlockData(form: FormData, namespace: string, value: any, key: string) {
-    let i = 0;
-    if (typeof value === "object" && value?.length !== 0) {
-        i++;
-        let blockNamespace = `${namespace}[fields]`;
-        for (const field in value) {
-            const matrixOrSuperTableBlockTest = new RegExp("pt-block-");
-            if (matrixOrSuperTableBlockTest.test(field)) {
-                buildField(form, `${blockNamespace}[${field}]`, value[field]);
-            }
-        }
-    } else {
-        buildField(form, `${namespace}[fields][${key}]`, value);
-    }
-}
-
 function buildMatrixData(form: FormData, namespace: string, matrix: object, newId: number) {
-    let i = 0;
-
     let matrixNamespace = `${namespace}[blocks][new${newId}][fields]`;
-
     for (const field in matrix) {
-        i++;
-        buildField(form, `${matrixNamespace}[${field}]`, matrix[field]);
-
-        // form.append(`${namespace}[sortOrder][]`, `new${i}`);
-        // let superTableType = null;
-        // const hasSuperTableBlockIdTest = new RegExp(/st\-block\-type\-\d+/);
-        // if (hasSuperTableBlockIdTest.test(key)) {
-        //     superTableType = key.match(/st\-block\-type\-\d+/)?.[0]?.match(/\d+/)?.[0];
-        // }
-        // form.append(`${matrixNamespace}${superTableType ? `[new${i}]` : ""}[type]`, superTableType ?? field);
-        // form.append(`${matrixNamespace}[enabled]`, "1");
-
-        // buildMatrixBlockData(form, `${matrixNamespace}[new${i}]`, block[key][field], field);
-
-        // let blockId = block.replace(/(pt\-block\-)|(st\-block\-type\-\d+)/g, "");
-        // if (!isNaN(parseInt(blockId))) {
-        //     blockId = null;
-        // }
-        // const blockNamespace = `${matrixNamespace}[new${i}]`;
-        // form.append(`${blockNamespace}[type]`, blockId ?? "");
-        // if (typeof value[key][block] === "object") {
-        //     const superTableBlockType = block.match(/st\-block\-type\-\d+/)?.[0]?.replace(/st\-block\-type\-/, "") ?? null;
-        //     if (superTableBlockType) {
-        //         form.set(`${blockNamespace}[type]`, superTableBlockType);
-        //     }
-        //     // fields[pageBuilder][blocks][new1][fields][superTableField][blocks][new1][fields][sortOrder][]: new1
-        //     // let updatedNamespace = `${blockNamespace}[fields]`;
-        //     for (const field in value[key][block]) {
-        //         buildField(form, blockNamespace, value[key][block][field]);
-        //     }
-        // }
-        // i++;
+        if (field !== "ptBlockType") {
+            buildField(form, `${matrixNamespace}[${field}]`, matrix[field]);
+        }
     }
 }
 
@@ -66,7 +18,6 @@ function buildField(form: FormData, namespace: string, value: any) {
     if (Array.isArray(value)) {
         return;
     }
-    console.log(value) === null;
     switch (typeof value) {
         case "number":
             form.append(`${namespace}[]`, `${value}`);
@@ -78,15 +29,15 @@ function buildField(form: FormData, namespace: string, value: any) {
             // Might be a Matrix/Super Table OR it could be a custom field
             let i = 0;
             for (const key in value) {
-                const matrixOrSuperTableBlockTest = new RegExp("pt-block-");
+                const matrixOrSuperTableBlockTest = new RegExp("matrix-");
                 if (matrixOrSuperTableBlockTest.test(key)) {
                     i++;
-                    const superTableType = key.match(/st\-block\-type\-\d+/)?.[0]?.match(/\d+/)?.[0] ?? null;
-                    const matrixType = key.match(/m\-block\-type\-.*/)?.[0]?.replace(/m\-block\-type\-/, "") ?? null;
-                    const type = superTableType ?? matrixType;
                     form.append(`${namespace}[sortOrder][]`, `new${i}`);
-                    if (type) {
-                        form.append(`${namespace}[blocks][new${i}][type]`, type);
+                    for (const block in value[key]) {
+                        if (block === "ptBlockType") {
+                            form.append(`${namespace}[blocks][new${i}][type]`, value[key][block]);
+                            break;
+                        }
                     }
                     buildMatrixData(form, namespace, value[key], i);
                 }

@@ -677,7 +677,7 @@ class PageBuilder extends Component<{}, PageBuilderState> {
                         <p>Creating page...</p>
                         {/* 
                         // @ts-ignore */}
-                        <circle-rail-spinner role="alert" aria-busy="true" aria-live="polite"></circle-rail-spinner>;
+                        <circle-rail-spinner role="alert" aria-busy="true" aria-live="polite"></circle-rail-spinner>
                     </div>
                 </div>
             );

@@ -1,7 +1,7 @@
 {
   "require": {
     "aelvan/imager": "v2.4.0",
-    "craftcms/cms": "^3.4.25",
+    "craftcms/cms": "3.5.5",
     "craftcms/redactor": "2.7.1",
     "nystudio107/craft-eagerbeaver": "1.0.4",
     "sebastianlenz/linkfield": "1.0.23",

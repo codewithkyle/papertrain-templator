@@ -156,8 +156,9 @@ class PapertrainModuleService extends Component
             foreach ($fields as $field)
             {
                 $value = $block->getFieldValue($field->handle);
-                $data['pt-block-' . $block->id . 'st-block-type-' . $block->type][$field->handle] = $this->getFieldData($value);
+                $data['matrix-' . $block->id][$field->handle] = $this->getFieldData($value);
             }
+            $data['matrix-' . $block->id]['ptBlockType'] = $block->type->id;
         }
         return $data;
     }
@@ -174,8 +175,9 @@ class PapertrainModuleService extends Component
             $fields = $block->getFieldValues();
             foreach ($fields as $key => $value)
             {
-                $data['pt-block-' . $block->id . 'm-block-type-' . $block->type][$key] = $this->getFieldData($value);
+                $data['matrix-' . $block->id][$key] = $this->getFieldData($value);
             }
+            $data['matrix-' . $block->id]['ptBlockType'] = $block->type->handle;
         }
         return $data;
     }
