@@ -14,3 +14,4 @@
 -   Demo Block entires **SHOULD** only have 1 block per entry
 -   Demo Block section access **SHOULD** be restricted (admins only)
 -   Page Builder matrix **MUST** be a matrix field with the handle of `pageBuilder`
+-   The `general.php` file **MUST** contain the `cpTrigger` value

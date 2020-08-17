@@ -10,6 +10,7 @@ import "./circle-rail-spinner.scss";
 import { TitleInput } from "./title-input";
 import { BlockButton } from "./block-button";
 import { Block } from "./block";
+import { buildEntryForm } from "./entry-builder";
 
 type BlockGroup = {
     handle: string;
@@ -162,9 +163,7 @@ class PageBuilder extends Component<{}, PageBuilderState> {
                 Accept: "application/json",
             }),
         });
-
-        const response = await request.json();
-        return response.data;
+        return await request.json();
     }
 
     private async loadBlock(handle: string, targetIndex: number = null, direction: number = null, id: string = null) {
@@ -441,26 +440,17 @@ class PageBuilder extends Component<{}, PageBuilderState> {
             return;
         }
         this.setState({ submitting: true });
-        const data = new FormData();
-        data.append("CRAFT_CSRF_TOKEN", mountingPoint.dataset.csrf);
-        data.append("sectionId", "1");
-        data.append("enabled", "0");
-        data.append("title", this.state.title);
+        let form = new FormData();
+        form.append("CRAFT_CSRF_TOKEN", mountingPoint.dataset.csrf);
+        form.append("sectionId", "1");
+        form.append("enabled", "0");
+        form.append("title", this.state.title);
 
-        // fields[myFieldHandle][new:1][type]
-        for (let i = 0; i < this.state.view.length; i++) {
-            // 'fields[<FieldHandle>][sortOrder][]', 'new:1'
-            data.append(`fields[pageBuilder][sortOrder][]`, `new${i + 1}`);
-            data.append(
-                `fields[pageBuilder][blocks][new${i + 1}][type]`,
-                (() => {
-                    let arr = this.state.view[i].split("-");
-                    let capital = arr.map((item, index) => (index ? item.charAt(0).toUpperCase() + item.slice(1).toLowerCase() : item));
-                    let capitalString = capital.join("");
-                    return capitalString;
-                })()
-            );
+        let blockData = {};
+        for (const key in this.state.blockData) {
+            blockData[key] = this.state.blockData[key].data;
         }
+        form = buildEntryForm(form, this.state.view, blockData);
 
         const request = await fetch(`${location.origin}/actions/entries/save-entry`, {
             method: "POST",
@@ -468,7 +458,7 @@ class PageBuilder extends Component<{}, PageBuilderState> {
             headers: new Headers({
                 Accept: "application/json",
             }),
-            body: data,
+            body: form,
         });
         const response = await request.json();
         if (request.ok) {

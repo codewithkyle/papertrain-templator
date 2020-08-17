@@ -9,7 +9,7 @@ module.exports = {
     module: {
         rules: [
             {
-                test: /\.tsx$|\.js$/,
+                test: /\.tsx$|\.js$|\.ts$/,
                 exclude: /(node_modules)/,
                 loader: "ts-loader",
                 options: {

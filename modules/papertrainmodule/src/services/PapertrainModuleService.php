@@ -65,9 +65,18 @@ class PapertrainModuleService extends Component
                                     {
                                         if (isset($block->ownerId) && isset($block->fieldId))
                                         {
-                                            $data[$block->fieldId] = $this->getSuperTableFields($block->ownerId, $block->fieldId);
+                                            $data['pt-block-' . $block->fieldId] = $this->getSuperTableFields($block->ownerId, $block->fieldId);
                                         }
                                     }
+                                    $remuxedData = [];
+                                    foreach ($data as $block)
+                                    {
+                                        foreach ($block as $key => $fields)
+                                        {
+                                            $remuxedData[$key] = $fields;
+                                        }
+                                    }
+                                    $data = $remuxedData;
                                 }
                                 else
                                 {
@@ -90,7 +99,6 @@ class PapertrainModuleService extends Component
                                             $data[] = $this->getMatrixBlockFields($block->ownerId, $block->id);
                                         }
                                     }
-                                    $data = array_values($data);
                                     $remuxedData = [];
                                     foreach ($data as $block)
                                     {
@@ -130,7 +138,6 @@ class PapertrainModuleService extends Component
                 }
                 break;
             default:
-                $data = gettype($value);
                 break;
         }
         return $data;
@@ -149,7 +156,7 @@ class PapertrainModuleService extends Component
             foreach ($fields as $field)
             {
                 $value = $block->getFieldValue($field->handle);
-                $data[$block->id][$field->handle] = $this->getFieldData($value);
+                $data['pt-block-' . $block->id . 'st-block-type-' . $block->type][$field->handle] = $this->getFieldData($value);
             }
         }
         return $data;
@@ -167,7 +174,7 @@ class PapertrainModuleService extends Component
             $fields = $block->getFieldValues();
             foreach ($fields as $key => $value)
             {
-                $data[$block->id][$key] = $this->getFieldData($value);
+                $data['pt-block-' . $block->id . 'm-block-type-' . $block->type][$key] = $this->getFieldData($value);
             }
         }
         return $data;
