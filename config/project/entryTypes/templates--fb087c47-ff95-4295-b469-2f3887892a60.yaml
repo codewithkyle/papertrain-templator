@@ -1,5 +1,5 @@
 fieldLayouts:
-  05771177-ebe2-4aba-9c97-a45c9dc22a5b:
+  a3db948f-a3e0-4b09-8987-3419e34d6763:
     tabs:
       -
         elements:
@@ -11,8 +11,8 @@ fieldLayouts:
             class: null
             disabled: false
             id: null
-            instructions: ''
-            label: 'Block Name'
+            instructions: null
+            label: null
             max: null
             min: null
             name: null
@@ -29,7 +29,7 @@ fieldLayouts:
             warning: null
             width: 100
           -
-            fieldUid: 3a5bd92c-3b75-423a-97d3-6981864e3727
+            fieldUid: 1bb7da4f-2b30-4fcd-8405-8d66c4884887
             instructions: ''
             label: ''
             required: '1'
@@ -39,23 +39,10 @@ fieldLayouts:
             width: 100
         name: Content
         sortOrder: 1
-      -
-        elements:
-          -
-            fieldUid: 5a3b6e1f-1731-4f87-b4dd-5664bee5d630
-            instructions: null
-            label: null
-            required: false
-            tip: null
-            type: craft\fieldlayoutelements\CustomField
-            warning: null
-            width: 100
-        name: Settings
-        sortOrder: 2
-handle: pageBuilderBlock
+handle: templates
 hasTitleField: true
-name: Block
-section: 869034cb-12c0-4a24-a727-39595d1337ab
+name: Template
+section: 6db62b02-8d48-4fe4-84b2-62f176fb6533
 sortOrder: 1
 titleFormat: null
 titleTranslationKeyFormat: null

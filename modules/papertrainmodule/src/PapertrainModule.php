@@ -100,12 +100,19 @@ class PapertrainModule extends Module
                     'label' => 'Page Builder',
                     'icon' => '@modules/papertrainmodule/assets/img/page-builder-icon.svg',
                 ];
+
+                $event->navItems[] = [
+                    'url' => 'papertrain/templates',
+                    'label' => 'Templates',
+                    'icon' => '@modules/papertrainmodule/assets/img/template.svg',
+                ];
                 
                 // $event->navItems[] = [
                 //     'url' => 'papertrain/blocks/defaults',
                 //     'label' => 'Demo Blocks',
                 //     'icon' => '@modules/papertrainmodule/assets/img/default-blocks.svg',
                 // ];
+                
             }
         );
 

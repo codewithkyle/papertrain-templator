@@ -1,4 +1,4 @@
-import { h, Component } from "preact";
+import { h, Component, createRef } from "preact";
 
 import "./title-input.scss";
 
@@ -8,6 +8,13 @@ type TitleInputProps = {
 };
 
 export class TitleInput extends Component<TitleInputProps, {}> {
+    private input: any;
+
+    constructor() {
+        super();
+        this.input = createRef();
+    }
+
     private handleInput: EventListener = (e: Event) => {
         const input = e.currentTarget as HTMLInputElement;
         this.props.callback(input.value);
@@ -23,10 +30,15 @@ export class TitleInput extends Component<TitleInputProps, {}> {
         }
     };
 
+    componentDidMount() {
+        this.input.current.focus();
+    }
+
     render() {
         return (
             <input
                 autofocus
+                ref={this.input}
                 className="title-input"
                 type="text"
                 // @ts-ignore

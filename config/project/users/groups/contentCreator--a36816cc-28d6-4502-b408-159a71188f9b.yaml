@@ -1,11 +1,12 @@
-description: 'These users have the ability to create pages using the page builder.'
-handle: contentEditors
-name: 'Content Editors'
+description: 'These users have the ability to create and edit Templates.'
+handle: contentCreator
+name: 'Content Creator'
 permissions:
   - accesscp
   - registerusers
   - moderateusers
   - assignuserpermissions
+  - 'assignusergroup:1a919789-bb17-4a9a-8ef9-a1b9b93d9dfd'
   - assignusergroups
   - administrateusers
   - impersonateusers
@@ -21,6 +22,16 @@ permissions:
   - 'deletepeerentrydrafts:13f2f90d-2fe1-44a9-8924-36640c7fd42f'
   - 'editpeerentrydrafts:13f2f90d-2fe1-44a9-8924-36640c7fd42f'
   - 'editentries:13f2f90d-2fe1-44a9-8924-36640c7fd42f'
+  - 'createentries:6db62b02-8d48-4fe4-84b2-62f176fb6533'
+  - 'publishentries:6db62b02-8d48-4fe4-84b2-62f176fb6533'
+  - 'deleteentries:6db62b02-8d48-4fe4-84b2-62f176fb6533'
+  - 'publishpeerentries:6db62b02-8d48-4fe4-84b2-62f176fb6533'
+  - 'deletepeerentries:6db62b02-8d48-4fe4-84b2-62f176fb6533'
+  - 'editpeerentries:6db62b02-8d48-4fe4-84b2-62f176fb6533'
+  - 'publishpeerentrydrafts:6db62b02-8d48-4fe4-84b2-62f176fb6533'
+  - 'deletepeerentrydrafts:6db62b02-8d48-4fe4-84b2-62f176fb6533'
+  - 'editpeerentrydrafts:6db62b02-8d48-4fe4-84b2-62f176fb6533'
+  - 'editentries:6db62b02-8d48-4fe4-84b2-62f176fb6533'
   - 'saveassetinvolume:b66c5c16-25d6-4b13-8841-a66a20643329'
   - 'createfoldersinvolume:b66c5c16-25d6-4b13-8841-a66a20643329'
   - 'deletefilesandfoldersinvolume:b66c5c16-25d6-4b13-8841-a66a20643329'

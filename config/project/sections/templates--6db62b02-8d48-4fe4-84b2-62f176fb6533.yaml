@@ -1,0 +1,26 @@
+enableVersioning: true
+handle: templates
+name: Templates
+previewTargets:
+  -
+    __assoc__:
+      -
+        - label
+        - 'Primary entry page'
+      -
+        - urlFormat
+        - '{url}'
+      -
+        - refresh
+        - '1'
+propagationMethod: all
+siteSettings:
+  dd11e4b2-5f12-4670-aeaa-22b78757e69b:
+    enabledByDefault: true
+    hasUrls: false
+    template: null
+    uriFormat: null
+structure:
+  maxLevels: 1
+  uid: 673cf97e-62ae-4042-8065-f4a28e03bde2
+type: structure

@@ -11,6 +11,7 @@ import { TitleInput } from "./title-input";
 import { BlockButton } from "./block-button";
 import { Block } from "./block";
 import { buildEntryForm } from "./entry-builder";
+import { buildTemplateForm } from "./template-builder";
 
 type BlockGroup = {
     handle: string;
@@ -38,7 +39,10 @@ type PageBuilderState = {
     blockData: {
         [key: string]: BlockData;
     };
-    view: Array<string>;
+    view: Array<{
+        id: string;
+        handle: string;
+    }>;
     drag: {
         over: boolean;
         handle: string;
@@ -48,6 +52,7 @@ type PageBuilderState = {
     };
     keyboardFocusedIndex: number;
     submitting: boolean;
+    prompt: "creator" | "editor" | null;
 };
 
 const mountingPoint: HTMLElement = document.body.querySelector("#page-builder-mounting-point");
@@ -76,6 +81,7 @@ class PageBuilder extends Component<{}, PageBuilderState> {
             },
             keyboardFocusedIndex: null,
             submitting: false,
+            prompt: null,
         };
     }
 
@@ -167,6 +173,7 @@ class PageBuilder extends Component<{}, PageBuilderState> {
     }
 
     private async loadBlock(handle: string, targetIndex: number = null, direction: number = null, id: string = null) {
+        let block = { handle: handle, id: id };
         if (!this.state.blockData?.[handle] && id !== null) {
             this.loadBlockResources(handle);
             const html = await this.fetchBlock(handle, id);
@@ -178,24 +185,24 @@ class PageBuilder extends Component<{}, PageBuilderState> {
             };
             if (targetIndex !== null && direction !== null) {
                 if (direction === -1) {
-                    updatedState.view.splice(targetIndex, 0, handle);
+                    updatedState.view.splice(targetIndex, 0, block);
                 } else {
-                    updatedState.view.splice(targetIndex + 1, 0, handle);
+                    updatedState.view.splice(targetIndex + 1, 0, block);
                 }
             } else {
-                updatedState.view.push(handle);
+                updatedState.view.push(block);
             }
             this.setState(updatedState);
         } else {
             const updatedState = { ...this.state };
             if (targetIndex !== null && direction !== null) {
                 if (direction === -1) {
-                    updatedState.view.splice(targetIndex, 0, handle);
+                    updatedState.view.splice(targetIndex, 0, block);
                 } else {
-                    updatedState.view.splice(targetIndex + 1, 0, handle);
+                    updatedState.view.splice(targetIndex + 1, 0, block);
                 }
             } else {
-                updatedState.view.push(handle);
+                updatedState.view.push(block);
             }
             this.setState(updatedState);
         }
@@ -341,14 +348,17 @@ class PageBuilder extends Component<{}, PageBuilderState> {
     }
 
     private setInitialState() {
-        let blocks = new URLSearchParams(location.search).getAll("b");
+        const blocks = new URLSearchParams(location.search).getAll("b");
         let loaded = 0;
+        const view = [];
         new Promise((resolve) => {
             if (blocks.length === 0) {
                 resolve();
             }
             for (let i = 0; i < blocks.length; i++) {
-                this.loadBlock(blocks[i]).then(() => {
+                const values = blocks[i].split(":");
+                view.push({ handle: values[1], id: values[0] });
+                this.loadBlock(values[1], null, null, values[0]).then(() => {
                     loaded++;
                     if (blocks.length === loaded) {
                         resolve();
@@ -357,7 +367,7 @@ class PageBuilder extends Component<{}, PageBuilderState> {
             }
         }).then(() => {
             window.history.replaceState(null, null, `${location.origin}/${mountingPoint.dataset.cpTrigger}/papertrain/page-builder`);
-            this.setState({ view: blocks, ready: true });
+            this.setState({ ready: true, view: view });
             setTimeout(() => {
                 this.view.current.scrollTo({
                     top: 0,
@@ -375,6 +385,51 @@ class PageBuilder extends Component<{}, PageBuilderState> {
                 });
             }, 150);
         });
+    }
+
+    private async create(type: "templates" | "pages") {
+        this.setState({ submitting: true, prompt: null });
+        let form = new FormData();
+        form.append("CRAFT_CSRF_TOKEN", mountingPoint.dataset.csrf);
+        form.append("title", this.state.title);
+
+        let blockData = {};
+        for (const key in this.state.blockData) {
+            blockData[key] = this.state.blockData[key].data;
+        }
+
+        if (type === "templates") {
+            form.append("sectionId", "4");
+            form.append("enabled", "1");
+            form = buildTemplateForm(form, this.state.view);
+        } else {
+            form.append("sectionId", "1");
+            form.append("enabled", "0");
+            let handles = [];
+            for (let i = 0; i < this.state.view.length; i++) {
+                handles.push(this.state.view[i].handle);
+            }
+            form = buildEntryForm(form, handles, blockData);
+        }
+
+        const request = await fetch(`${location.origin}/actions/entries/save-entry`, {
+            method: "POST",
+            credentials: "include",
+            headers: new Headers({
+                Accept: "application/json",
+            }),
+            body: form,
+        });
+        const response = await request.json();
+        if (request.ok) {
+            if (response?.success) {
+                location.href = `${location.origin}/${mountingPoint.dataset.cpTrigger}/entries/${type}/${response.id}`;
+            } else {
+                this.setState({ submitting: false });
+            }
+        } else {
+            this.setState({ submitting: true });
+        }
     }
 
     // Event Listeners =========================================================================================================
@@ -435,41 +490,24 @@ class PageBuilder extends Component<{}, PageBuilderState> {
         }
     };
 
-    private createPage: EventListener = async () => {
+    private handleSave: EventListener = () => {
         if (!this.state.view.length) {
             return;
         }
-        this.setState({ submitting: true });
-        let form = new FormData();
-        form.append("CRAFT_CSRF_TOKEN", mountingPoint.dataset.csrf);
-        form.append("sectionId", "1");
-        form.append("enabled", "0");
-        form.append("title", this.state.title);
 
-        let blockData = {};
-        for (const key in this.state.blockData) {
-            blockData[key] = this.state.blockData[key].data;
+        if (this.state.title === "Untitled page") {
+            this.setState({ prompt: "editor" });
+            return;
         }
-        form = buildEntryForm(form, this.state.view, blockData);
+        const isCreator = mountingPoint.dataset.creator;
+        if (isCreator) {
+            this.setState({ prompt: "creator" });
+            return;
+        }
+    };
 
-        const request = await fetch(`${location.origin}/actions/entries/save-entry`, {
-            method: "POST",
-            credentials: "include",
-            headers: new Headers({
-                Accept: "application/json",
-            }),
-            body: form,
-        });
-        const response = await request.json();
-        if (request.ok) {
-            if (response?.success) {
-                location.href = `${location.origin}/${mountingPoint.dataset.cpTrigger}/entries/pages/${response.id}`;
-            } else {
-                this.setState({ submitting: false });
-            }
-        } else {
-            this.setState({ submitting: true });
-        }
+    private savePage: EventListener = () => {
+        this.create("pages");
     };
 
     private handleURLPrompt: EventListener = () => {
@@ -477,14 +515,26 @@ class PageBuilder extends Component<{}, PageBuilderState> {
         for (let i = 0; i < this.state.view.length; i++) {
             switch (i) {
                 case 0:
-                    url += `?b=${this.state.view[i]}`;
+                    url += `?b=${this.state.view[i].id}:${this.state.view[i].handle}`;
                     break;
                 default:
-                    url += `&b=${this.state.view[i]}`;
+                    url += `&b=${this.state.view[i].id}:${this.state.view[i].handle}`;
                     break;
             }
         }
         prompt("Share this page layout.", url);
+    };
+
+    private clearPrompt: EventListener = () => {
+        this.setState({ prompt: null });
+    };
+
+    private saveAsTemplate: EventListener = () => {
+        this.create("templates");
+    };
+
+    private leavePage: EventListener = () => {
+        location.href = `${location.origin}/${mountingPoint.dataset.cpTrigger}`;
     };
 
     // Render Functions =========================================================================================================
@@ -548,8 +598,15 @@ class PageBuilder extends Component<{}, PageBuilderState> {
         });
     }
 
+    private async init() {
+        await this.fetchBlocks();
+        setTimeout(() => {
+            this.setInitialState();
+        }, 150);
+    }
+
     componentDidMount() {
-        this.fetchBlocks();
+        this.init();
         // Normalize
         const normalize = document.createElement("link");
         normalize.href = `${location.origin}/assets/normalize.css`;
@@ -571,8 +628,6 @@ class PageBuilder extends Component<{}, PageBuilderState> {
         document.addEventListener("keyup", this.handleKeyboardMove);
 
         this.scrollCallback();
-
-        this.setInitialState();
     }
 
     render() {
@@ -593,7 +648,7 @@ class PageBuilder extends Component<{}, PageBuilderState> {
         let view: any = null;
         let dropzone = null;
         if (this.state.view.length && this.state.ready) {
-            view = this.state.view.map((handle, index) => this.renderBlock(handle, index));
+            view = this.state.view.map((block, index) => this.renderBlock(block.handle, index));
         } else if (!this.state.ready) {
             view = (
                 // @ts-ignore
@@ -628,10 +683,58 @@ class PageBuilder extends Component<{}, PageBuilderState> {
             );
         }
 
+        let prompt;
+        switch (this.state.prompt) {
+            case "creator":
+                prompt = (
+                    <div className="prompt">
+                        <div className="prompt-background" onClick={this.clearPrompt}></div>
+                        <div>
+                            <p>What type of layout is this?</p>
+                            <button style={{ width: "calc(50% - 0.5rem)", marginRight: "1rem" }} className="pt-bttn -solid -primary" onClick={this.saveAsTemplate}>
+                                Template
+                            </button>
+                            <button style={{ width: "calc(50% - 0.5rem)" }} className="pt-bttn -solid -primary" onClick={this.savePage}>
+                                Page
+                            </button>
+                        </div>
+                    </div>
+                );
+                break;
+            case "editor":
+                prompt = (
+                    <div className="prompt">
+                        <div className="prompt-background" onClick={this.clearPrompt}></div>
+                        <div style={{ display: "flex", flexFlow: "row nowrap", alignItems: "center" }}>
+                            <TitleInput value={this.state.title} callback={this.updateTitle.bind(this)} />
+                            <button style={{ marginLeft: "1rem" }} className="pt-bttn -solid -primary" onClick={this.handleSave}>
+                                Save
+                            </button>
+                        </div>
+                    </div>
+                );
+                break;
+            default:
+                prompt = null;
+                break;
+        }
+
         return (
             <Fragment>
                 <header style={{ filter: this.state.submitting ? "blur(4px)" : "" }}>
-                    <TitleInput value={this.state.title} callback={this.updateTitle.bind(this)} />
+                    <div>
+                        <button onClick={this.leavePage} className="pt-bttn -text -grey -round -icon-only" style={{ marginRight: "0.5rem" }}>
+                            <i>
+                                <svg aria-hidden="true" focusable="false" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+                                    <path
+                                        fill="currentColor"
+                                        d="M257.5 445.1l-22.2 22.2c-9.4 9.4-24.6 9.4-33.9 0L7 273c-9.4-9.4-9.4-24.6 0-33.9L201.4 44.7c9.4-9.4 24.6-9.4 33.9 0l22.2 22.2c9.5 9.5 9.3 25-.4 34.3L136.6 216H424c13.3 0 24 10.7 24 24v32c0 13.3-10.7 24-24 24H136.6l120.5 114.8c9.8 9.3 10 24.8.4 34.3z"
+                                    ></path>
+                                </svg>
+                            </i>
+                        </button>
+                        <TitleInput value={this.state.title} callback={this.updateTitle.bind(this)} />
+                    </div>
                     <div>
                         <button onClick={this.handleURLPrompt} className="pt-bttn -text -grey -icon-only -round">
                             <i>
@@ -653,7 +756,7 @@ class PageBuilder extends Component<{}, PageBuilderState> {
                                 </svg>
                             </i>
                         </button>
-                        <button onClick={this.createPage} className="pt-bttn -text -primary -icon-only -round" style={{ marginLeft: "0.25rem" }}>
+                        <button onClick={this.handleSave} className="pt-bttn -text -primary -icon-only -round" style={{ marginLeft: "0.25rem" }}>
                             <i>
                                 <svg aria-hidden="true" focusable="false" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
                                     <path
@@ -685,6 +788,7 @@ class PageBuilder extends Component<{}, PageBuilderState> {
                     className={`capture-scroll bottom ${this.state.drag.handle !== null || this.state.drag.index !== null ? "is-active" : ""}`}
                 ></div>
                 {submitting}
+                {prompt}
             </Fragment>
         );
     }
