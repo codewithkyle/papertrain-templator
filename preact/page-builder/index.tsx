@@ -689,7 +689,7 @@ class PageBuilder extends Component<{}, PageBuilderState> {
                 prompt = (
                     <div className="prompt">
                         <div className="prompt-background" onClick={this.clearPrompt}></div>
-                        <div>
+                        <div className="prompt-container">
                             <p>What type of layout is this?</p>
                             <button style={{ width: "calc(50% - 0.5rem)", marginRight: "1rem" }} className="pt-bttn -solid -primary" onClick={this.saveAsTemplate}>
                                 Template
@@ -705,9 +705,14 @@ class PageBuilder extends Component<{}, PageBuilderState> {
                 prompt = (
                     <div className="prompt">
                         <div className="prompt-background" onClick={this.clearPrompt}></div>
-                        <div style={{ display: "flex", flexFlow: "row nowrap", alignItems: "center" }}>
+                        <div className="prompt-container" style={{ display: "flex", flexFlow: "row nowrap", alignItems: "center" }}>
                             <TitleInput value={this.state.title} callback={this.updateTitle.bind(this)} />
-                            <button style={{ marginLeft: "1rem" }} className="pt-bttn -solid -primary" onClick={this.handleSave}>
+                            <button
+                                disabled={this.state.title === "Untitled page" || !this.state.title}
+                                style={{ marginLeft: "1rem" }}
+                                className="pt-bttn -solid -primary"
+                                onClick={this.handleSave}
+                            >
                                 Save
                             </button>
                         </div>
