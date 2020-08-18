@@ -53,6 +53,7 @@ type PageBuilderState = {
     keyboardFocusedIndex: number;
     submitting: boolean;
     prompt: "creator" | "editor" | null;
+    windowSizeError: boolean;
 };
 
 const mountingPoint: HTMLElement = document.body.querySelector("#page-builder-mounting-point");
@@ -82,6 +83,7 @@ class PageBuilder extends Component<{}, PageBuilderState> {
             keyboardFocusedIndex: null,
             submitting: false,
             prompt: null,
+            windowSizeError: window.innerHeight < 768 || window.innerWidth < 1440,
         };
     }
 
@@ -537,6 +539,18 @@ class PageBuilder extends Component<{}, PageBuilderState> {
         location.href = `${location.origin}/${mountingPoint.dataset.cpTrigger}`;
     };
 
+    private checkResize: EventListener = () => {
+        if (window.innerWidth < 1440 || window.innerHeight < 768) {
+            if (!this.state.windowSizeError) {
+                this.setState({ windowSizeError: true });
+            }
+        } else {
+            if (this.state.windowSizeError) {
+                this.setState({ windowSizeError: false });
+            }
+        }
+    };
+
     // Render Functions =========================================================================================================
 
     private renderBlockButton = (block: IBlock, group: string) => {
@@ -628,6 +642,8 @@ class PageBuilder extends Component<{}, PageBuilderState> {
         document.addEventListener("keyup", this.handleKeyboardMove);
 
         this.scrollCallback();
+
+        window.addEventListener("resize", this.checkResize, { passive: true });
     }
 
     render() {
@@ -703,9 +719,9 @@ class PageBuilder extends Component<{}, PageBuilderState> {
                 break;
             case "editor":
                 prompt = (
-                    <div className="prompt">
-                        <div className="prompt-background" onClick={this.clearPrompt}></div>
-                        <div className="prompt-container" style={{ display: "flex", flexFlow: "row nowrap", alignItems: "center" }}>
+                    <div className="pt-prompt">
+                        <div className="pt-prompt-background" onClick={this.clearPrompt}></div>
+                        <div className="pt-prompt-container" style={{ display: "flex", flexFlow: "row nowrap", alignItems: "center" }}>
                             <TitleInput value={this.state.title} callback={this.updateTitle.bind(this)} />
                             <button
                                 disabled={this.state.title === "Untitled page" || !this.state.title}
@@ -722,6 +738,17 @@ class PageBuilder extends Component<{}, PageBuilderState> {
             default:
                 prompt = null;
                 break;
+        }
+
+        let deviceSizeWarning = null;
+        if (this.state.windowSizeError) {
+            deviceSizeWarning = (
+                <div className="pt-device-size-warning">
+                    <div>
+                        <p>This application requires a screen size of at least 1440x768. Please resize your browser window or view on a device with a larger screen.</p>
+                    </div>
+                </div>
+            );
         }
 
         return (
@@ -794,6 +821,7 @@ class PageBuilder extends Component<{}, PageBuilderState> {
                 ></div>
                 {submitting}
                 {prompt}
+                {deviceSizeWarning}
             </Fragment>
         );
     }
