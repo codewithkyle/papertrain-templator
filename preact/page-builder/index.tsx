@@ -1,4 +1,5 @@
 import { h, render, Component, Fragment, createRef } from "preact";
+import { hookup } from "wwibs";
 
 import "../base.scss";
 import "../buttons.scss";
@@ -12,6 +13,7 @@ import { BlockButton } from "./block-button";
 import { Block } from "./block";
 import { buildEntryForm } from "./entry-builder";
 import { buildTemplateForm } from "./template-builder";
+import { Iframe } from "./iframe";
 
 type BlockGroup = {
     handle: string;
@@ -85,6 +87,16 @@ class PageBuilder extends Component<{}, PageBuilderState> {
             prompt: null,
             windowSizeError: window.innerHeight < 768 || window.innerWidth < 1440,
         };
+
+        hookup("pb", this.inbox.bind(this));
+    }
+
+    private inbox(data) {
+        switch (data.type) {
+            default:
+                console.warn(`Unhandled Page Builder message type ${data.type}`);
+                break;
+        }
     }
 
     // Functions =========================================================================================================
@@ -656,7 +668,7 @@ class PageBuilder extends Component<{}, PageBuilderState> {
                 <div style={{ width: "100%", height: "100%", display: "flex", justifyContent: "center", alignItems: "center" }}>
                     {/* 
                     // @ts-ignore */}
-                    <circle-rail-spinner role="alert" aria-busy="true" aria-live="polite"></circle-rail-spinner>;
+                    <circle-rail-spinner role="alert" aria-busy="true" aria-live="polite"></circle-rail-spinner>
                 </div>
             );
         }
@@ -671,7 +683,7 @@ class PageBuilder extends Component<{}, PageBuilderState> {
                 <div style={{ width: "100%", height: "100%", display: "flex", justifyContent: "center", alignItems: "center" }}>
                     {/* 
                     // @ts-ignore */}
-                    <circle-rail-spinner role="alert" aria-busy="true" aria-live="polite"></circle-rail-spinner>;
+                    <circle-rail-spinner role="alert" aria-busy="true" aria-live="polite"></circle-rail-spinner>
                 </div>
             );
         } else if (!this.state.drag.over) {
