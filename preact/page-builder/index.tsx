@@ -753,7 +753,7 @@ class PageBuilder extends Component<{}, PageBuilderState> {
 
         return (
             <Fragment>
-                <header style={{ filter: this.state.submitting ? "blur(4px)" : "" }}>
+                <div className="pt-header" style={{ filter: this.state.submitting ? "blur(4px)" : "" }}>
                     <div>
                         <button onClick={this.leavePage} className="pt-bttn -text -grey -round -icon-only" style={{ marginRight: "0.5rem" }}>
                             <i>
@@ -799,16 +799,16 @@ class PageBuilder extends Component<{}, PageBuilderState> {
                             </i>
                         </button>
                     </div>
-                </header>
-                <main style={{ filter: this.state.submitting ? "blur(4px)" : "" }} className="page-builder">
-                    <aside>{aside}</aside>
+                </div>
+                <div style={{ filter: this.state.submitting ? "blur(4px)" : "" }} className="page-builder">
+                    <div className="pt-aside">{aside}</div>
                     <div className="view" ref={this.view}>
                         <div className={`page ${this.state.drag.over ? "can-drop" : ""}`} onDragOver={this.dragOver} onDragLeave={this.dragLeave} onDrop={this.handleDrop}>
                             {view}
                             {dropzone}
                         </div>
                     </div>
-                </main>
+                </div>
                 <div
                     onDragEnter={this.startBodyDrag}
                     onDragLeave={this.endBodyDrag}
