@@ -13,7 +13,6 @@ import { BlockButton } from "./block-button";
 import { Block } from "./block";
 import { buildEntryForm } from "./entry-builder";
 import { buildTemplateForm } from "./template-builder";
-import { Iframe } from "./iframe";
 
 type BlockGroup = {
     handle: string;
